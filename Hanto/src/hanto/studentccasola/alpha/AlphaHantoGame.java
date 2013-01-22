@@ -28,7 +28,7 @@ import hanto.util.MoveResult;
 public class AlphaHantoGame implements HantoGame
 {
 
-	private final List<HexCell> board;
+	private List<HexCell> board;
 	private HantoPlayerColor turn;
 
 	public AlphaHantoGame()
@@ -43,7 +43,14 @@ public class AlphaHantoGame implements HantoGame
 	@Override
 	public void initialize(HantoPlayerColor firstPlayer) throws HantoException
 	{
-		// TODO Auto-generated method stub
+		if (firstPlayer == HantoPlayerColor.BLUE)
+		{
+			board = new ArrayList<HexCell>();
+			turn = firstPlayer;
+		}
+		else {
+			throw new HantoException("Game cannot be initialized with RED as the first player.");
+		}
 
 	}
 
@@ -54,23 +61,26 @@ public class AlphaHantoGame implements HantoGame
 	@Override
 	public MoveResult makeMove(HantoPieceType pieceType, HantoCoordinate from,
 			HantoCoordinate to) throws HantoException
-			{
+	{
 		if (pieceType == HantoPieceType.BUTTERFLY)
 		{
 			if (turn == HantoPlayerColor.BLUE && !(to.getX() == 0 && to.getY() == 0))
 			{
 				throw new HantoException("Blue must place a butterfly at (0,0)");
 			}
-
+			else if (!isAdjacent(to))
+			{
+				throw new HantoException("Piece must be adjacent to another piece on the board.");
+			}
 			board.add(new HexCell(to, turn, pieceType));
 			turn = (turn == HantoPlayerColor.BLUE) ? HantoPlayerColor.RED : HantoPlayerColor.BLUE;
-			return MoveResult.OK;
+			return checkGameState();
 		}
 		else
 		{
 			throw new HantoException("Only butterflies may be used in this game.");
 		}
-			}
+	}
 
 	/*
 	 * @see hanto.common.HantoGame#getPrintableBoard()
@@ -94,5 +104,62 @@ public class AlphaHantoGame implements HantoGame
 	 */
 	public List<HexCell> getBoard() {
 		return board;
+	}
+	
+	/**
+	 * Returns the state of the game. If the game is over, this method
+	 * returns DRAW, RED_WINS, or BLUE_WINS. Otherwise OK.
+	 * 
+	 * @return DRAW, RED_WINS, or BLUE_WINS if the game is over, otherwise OK.
+	 */
+	protected MoveResult checkGameState() {
+		MoveResult gameState;
+		if (board.size() < 2) {
+			gameState = MoveResult.OK;
+		}
+		else {
+			gameState = MoveResult.DRAW;
+		}
+		return gameState;
+	}
+
+	/**
+	 * Check if the given coordinate is adjacent to (0,0)
+	 * 
+	 * @param to the coordinate to check
+	 * @return true if the given coordinate is adjacent to (0,0), otherwise false
+	 */
+	protected boolean isAdjacent(HantoCoordinate to)
+	{
+		// always return true if no pieces have been placed yet
+		if (board.size() < 1) {
+			return true;
+		}
+
+		// brute force check for adjacency to (0,0)
+		switch (to.getX())
+		{
+		case -1:
+			if (to.getY() == 1 || to.getY() == 0)
+			{
+				return true;
+			}
+			break;
+		case 0:
+			if (to.getY() == 1 || to.getY() == -1)
+			{
+				return true;
+			}
+			break;
+		case 1:
+			if (to.getY() == -1 || to.getY() == 0)
+			{
+				return true;
+			}
+			break;
+		default:
+			break;
+		}
+		return false;
 	}
 }

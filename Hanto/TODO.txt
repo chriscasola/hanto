@@ -6,5 +6,5 @@ X blue places butterfly at 0,0
 - game ends in a draw
 X make sure the correct player moves
 X make sure the correct piece is specified
-- make sure correct/valid coordinates are passed to makeMove()
+X make sure correct/valid coordinates are passed to makeMove()
 - first call to makeMove() returns OK, second returns DRAW, assuming moves are legal

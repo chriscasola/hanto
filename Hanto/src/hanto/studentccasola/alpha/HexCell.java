@@ -14,7 +14,9 @@ import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 
 /**
- * 
+ * This class is used to represent a cell on the hexagonal board. It
+ * contains the coordinate of the cell, the player whose piece occupies
+ * the cell, and the piece.
  * 
  * @author Chris Casola
  * @version Jan 22, 2013
@@ -25,6 +27,13 @@ public class HexCell
 	private final HantoPlayerColor player;
 	private final HantoPieceType piece;
 
+	/**
+	 * Constructs a new HexCell.
+	 * 
+	 * @param coordinate the coordinate of this cell
+	 * @param player the player whose piece occupies this cell
+	 * @param piece the piece that occupies this cell
+	 */
 	public HexCell(HantoCoordinate coordinate, HantoPlayerColor player, HantoPieceType piece)
 	{
 		this.coordinate = coordinate;

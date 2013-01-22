@@ -21,11 +21,11 @@ public class HexCoordinate implements HantoCoordinate
 {
 	
 	/** The x position */
-	private int xPos;
+	private final int xPos;
 	
 	
 	/** The y position */
-	private int yPos;
+	private final int yPos;
 	
 	/**
 	 * Constructs a new HexCoordinate with the given coordinates
@@ -55,20 +55,4 @@ public class HexCoordinate implements HantoCoordinate
 		return yPos;
 	}
 
-	/* 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		else if (other instanceof HantoCoordinate) {
-			HantoCoordinate otherCoord = (HantoCoordinate) other;
-			if (this.getX() == otherCoord.getX() && this.getY() == otherCoord.getY()) {
-				return true;
-			}
-		}
-		return false;
-	}
 }
