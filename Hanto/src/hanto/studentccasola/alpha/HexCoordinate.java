@@ -9,6 +9,9 @@
  *******************************************************************************/
 package hanto.studentccasola.alpha;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import hanto.util.HantoCoordinate;
 
 /**
@@ -36,6 +39,19 @@ public class HexCoordinate implements HantoCoordinate
 		this.xPos = xPos;
 		this.yPos = yPos;
 	}
+	
+	public Set<HexCoordinate> getAdjacentCoordinates()
+	{
+		HashSet<HexCoordinate> neighbors = new HashSet<HexCoordinate>();
+		neighbors.add(new HexCoordinate(xPos, yPos - 1));
+		neighbors.add(new HexCoordinate(xPos, yPos + 1));
+		neighbors.add(new HexCoordinate(xPos - 1, yPos));
+		neighbors.add(new HexCoordinate(xPos - 1, yPos + 1));
+		neighbors.add(new HexCoordinate(xPos + 1, yPos));
+		neighbors.add(new HexCoordinate(xPos + 1, yPos - 1));
+		
+		return neighbors;
+	}
 
 	/* 
 	 * @see hanto.util.HantoCoordinate#getX()
@@ -62,5 +78,36 @@ public class HexCoordinate implements HantoCoordinate
 	public String toString()
 	{
 		return "(" + xPos + "," + yPos + ")";
+	}
+	
+	/* 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object other)
+	{
+		boolean isEqual = false;
+		if (this == other) {
+			isEqual = true;
+		}
+		else if (other instanceof HexCoordinate) {
+			final HexCoordinate otherCoord = (HexCoordinate) other;
+			if (xPos == otherCoord.getX() && yPos == otherCoord.getY()) {
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
+	
+	/* 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode()
+	{
+		int hash = 0;
+		hash += Integer.valueOf(xPos).hashCode();
+		hash += Integer.valueOf(yPos).hashCode();
+		return hash;
 	}
 }

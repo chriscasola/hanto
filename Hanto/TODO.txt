@@ -8,6 +8,7 @@ BETA HANTO
 - each player gets five sparrows
 - determine when a butterfly is surrounded
 - end game with draw if all pieces are placed and no butterfly is surrounded
+- make sure each player has one butterfly
 
 
 

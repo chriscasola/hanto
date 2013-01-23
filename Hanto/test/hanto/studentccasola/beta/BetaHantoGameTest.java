@@ -12,6 +12,7 @@ package hanto.studentccasola.beta;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -22,6 +23,8 @@ import org.junit.Test;
  */
 public class BetaHantoGameTest
 {
+	
+	private BetaHantoGame game;
 
 	/**
 	 * @throws java.lang.Exception
@@ -29,8 +32,10 @@ public class BetaHantoGameTest
 	@Before
 	public void setUp() throws Exception
 	{
+		game = new BetaHantoGame();
 	}
 
+	@Ignore
 	@Test
 	public void test()
 	{

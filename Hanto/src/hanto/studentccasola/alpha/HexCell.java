@@ -23,7 +23,7 @@ import hanto.util.HantoPlayerColor;
  */
 public class HexCell
 {
-	private final HantoCoordinate coordinate;
+	private final HexCoordinate coordinate;
 	private final HantoPlayerColor player;
 	private final HantoPieceType piece;
 
@@ -34,17 +34,22 @@ public class HexCell
 	 * @param player the player whose piece occupies this cell
 	 * @param piece the piece that occupies this cell
 	 */
-	public HexCell(HantoCoordinate coordinate, HantoPlayerColor player, HantoPieceType piece)
+	public HexCell(HexCoordinate coordinate, HantoPlayerColor player, HantoPieceType piece)
 	{
 		this.coordinate = coordinate;
 		this.player = player;
 		this.piece = piece;
 	}
+	
+	public HexCell(HantoCoordinate coordinate, HantoPlayerColor player, HantoPieceType piece)
+	{
+		this(new HexCoordinate(coordinate.getX(), coordinate.getY()), player, piece);
+	}
 
 	/**
 	 * @return the coordinate
 	 */
-	public HantoCoordinate getCoordinate()
+	public HexCoordinate getCoordinate()
 	{
 		return coordinate;
 	}
