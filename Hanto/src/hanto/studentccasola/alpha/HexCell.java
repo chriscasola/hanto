@@ -64,4 +64,15 @@ public class HexCell
 	{
 		return player;
 	}
+	
+	/* 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return "Coordinate: " + coordinate.toString() + 
+				" Player: " + player.toString() + 
+				" Piece: " + piece.getPrintableName();
+	}
 }

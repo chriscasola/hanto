@@ -138,6 +138,29 @@ public class AlphaHantoGameTest
 	}
 	
 	/**
+	 * getPrintableBoard() should return a string representation of
+	 * the game board.
+	 * 
+	 * @throws HantoException
+	 */
+	@Test
+	public void printTheGameBoard() throws HantoException {
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,0));
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,1));
+		assertEquals("[Coordinate: (0,0) Player: BLUE Piece: Butterfly, Coordinate: (0,1) Player: RED Piece: Butterfly]",
+				game.getPrintableBoard());
+	}
+	
+	@Test
+	public void dummyTestToExerciseEnums() {
+		HantoPlayerColor.valueOf("BLUE");
+		MoveResult.valueOf("DRAW");
+		HantoPieceType.BUTTERFLY.toString();
+		HantoPieceType.BUTTERFLY.getSymbol();
+		HantoPieceType.valueOf("BUTTERFLY");
+	}
+	
+	/**
 	 * Make sure game cannot be initialized with red as the first player
 	 * @throws HantoException 
 	 */

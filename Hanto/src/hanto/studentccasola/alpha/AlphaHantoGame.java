@@ -20,7 +20,10 @@ import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
 
 /**
- * 
+ * This is the alpha version of Hanto as specified in the Hanto Developer's
+ * Guide. There is one type of piece: butterfly. The piece cannot move. There
+ * is only one round: blue places the butterfly at (0,0), then red places the
+ * butterfly adjacent to the blue butterfly. The game ends in a draw.
  * 
  * @author Chris Casola
  * @version Jan 22, 2013
@@ -31,6 +34,10 @@ public class AlphaHantoGame implements HantoGame
 	private List<HexCell> board;
 	private HantoPlayerColor turn;
 
+	/**
+	 * Constructs a new AlphaHantoGame with
+	 * Blue as the first player.
+	 */
 	public AlphaHantoGame()
 	{
 		board = new ArrayList<HexCell>();
@@ -62,19 +69,26 @@ public class AlphaHantoGame implements HantoGame
 	public MoveResult makeMove(HantoPieceType pieceType, HantoCoordinate from,
 			HantoCoordinate to) throws HantoException
 	{
-		if (pieceType == HantoPieceType.BUTTERFLY)
+		if (pieceType == HantoPieceType.BUTTERFLY) // only butterfly pieces are valid
 		{
+			// make sure if this is blue's turn, they place their piece at (0,0)
 			if (turn == HantoPlayerColor.BLUE && !(to.getX() == 0 && to.getY() == 0))
 			{
 				throw new HantoException("Blue must place a butterfly at (0,0)");
 			}
+			// make sure this piece will be adjacent to another piece on the board
 			else if (!isAdjacent(to))
 			{
 				throw new HantoException("Piece must be adjacent to another piece on the board.");
 			}
+			
+			// add the piece to the board
 			board.add(new HexCell(to, turn, pieceType));
+			
+			// flip the turn status to the opposite player
 			turn = (turn == HantoPlayerColor.BLUE) ? HantoPlayerColor.RED : HantoPlayerColor.BLUE;
-			return checkGameState();
+			
+			return checkGameState(); // return the state of the game
 		}
 		else
 		{
@@ -88,8 +102,7 @@ public class AlphaHantoGame implements HantoGame
 	@Override
 	public String getPrintableBoard()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return board.toString();
 	}
 
 	/**
