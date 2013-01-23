@@ -1,10 +1,25 @@
+BETA HANTO
+- blue moves first by default
+- call to initialize() can specify that red moves first
+- check adjacency of pieces
+- ensure first move is at (0,0)
+- butterfly must be on board by 4th turn (if no butterfly, the only legal move for the 4th move is to place it)
+- can place sparrows (same abilities as butterfly)
+- each player gets five sparrows
+- determine when a butterfly is surrounded
+- end game with draw if all pieces are placed and no butterfly is surrounded
+
+
+
+
+
 ALPHA HANTO
 X place butterfly on board
 X blue moves first
 X blue places butterfly at 0,0
-- red places butterfly adjacent to blue butterfly
-- game ends in a draw
+X red places butterfly adjacent to blue butterfly
+X game ends in a draw
 X make sure the correct player moves
 X make sure the correct piece is specified
 X make sure correct/valid coordinates are passed to makeMove()
-- first call to makeMove() returns OK, second returns DRAW, assuming moves are legal
+X first call to makeMove() returns OK, second returns DRAW, assuming moves are legal
