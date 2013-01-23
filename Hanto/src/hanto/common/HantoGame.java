@@ -53,7 +53,7 @@ public interface HantoGame
 	 * @throws HantoException
 	 *             if there are any problems in making the move (such as specifying a
 	 *             coordinate that does not have the appropriate piece, or the color of
-	 *             the piece is the color of the player who is moving.
+	 *             the piece is not the color of the player who is moving.
 	 */
 	MoveResult makeMove(HantoPieceType pieceType, HantoCoordinate from,
 			HantoCoordinate to) throws HantoException;
