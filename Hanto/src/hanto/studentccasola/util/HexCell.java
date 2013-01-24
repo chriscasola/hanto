@@ -88,4 +88,39 @@ public class HexCell
 				" Player: " + player.toString() + 
 				" Piece: " + piece.getPrintableName();
 	}
+	
+	/* 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object other)
+	{
+		boolean isEqual = false;
+		if (this == other) {
+			isEqual = true;
+		}
+		else if (other instanceof HexCell) {
+			final HexCell otherCell = (HexCell) other;
+			if (coordinate.equals(otherCell.coordinate) &&
+					player == otherCell.getPlayer() &&
+					piece == otherCell.getPiece())
+			{
+				isEqual = true;
+			}
+		}
+		return isEqual;
+	}
+	
+	/* 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode()
+	{
+		int hash = 0;
+		hash += coordinate.hashCode();
+		hash += player.hashCode();
+		hash += piece.hashCode();
+		return hash;
+	}
 }

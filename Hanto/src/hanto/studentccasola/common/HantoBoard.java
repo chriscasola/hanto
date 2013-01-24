@@ -39,6 +39,16 @@ public interface HantoBoard
 	void placePiece(HexCell hexCell) throws HantoException;
 	
 	/**
+	 * Moves the cell at the given from location to the given to location.
+	 * @param from the original location of the cell
+	 * @param to the new location of the cell
+	 * @throws HantoException if there is no cell at the given from location, if
+	 * there is already a cell at the given to location, or if moving the piece
+	 * would result in all cells no longer being contiguous.
+	 */
+	void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException;
+	
+	/**
 	 * Returns OK if there is no winner, RED_WINS if the blue butterfly
 	 * has been surrounded, BLUE_WINS if the red butterfly has been
 	 * surrounded, or DRAW if both butterflies have been surrounded.
