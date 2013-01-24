@@ -10,6 +10,8 @@
 package hanto.studentccasola.util;
 
 import hanto.common.HantoException;
+import hanto.studentccasola.common.HantoBoard;
+import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -21,34 +23,34 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * A Hanto board. This board keeps track of the placement of Hanto
+ * A basic Hanto board. This board keeps track of the placement of Hanto
  * pieces and performs other functions, including checking the adjacency
- * of cells and determining if butterflies are surrounded.
+ * of cells and determining if butterflies are surrounded. This implementation
+ * uses a relatively primitive data structure and algorithms for determining
+ * adjacency.
  *
  * @author Chris Casola
  * @version Jan 23, 2013
  */
-public class HantoBoard
+public class BasicHantoBoard implements HantoBoard
 {
+	
+	/** A map with coordinate as the key and cells as the value. */
 	private final Map<HexCoordinate, HexCell> coordinateMap;
 	
 	
 	/**
 	 * Constructs a hanto board that initially contains no cells
 	 */
-	public HantoBoard()
+	public BasicHantoBoard()
 	{
 		coordinateMap = new HashMap<HexCoordinate, HexCell>();
 	}
 
-	/**
-	 * Places the given cell in the board, assuming the cell is not
-	 * already occupied on the board.
-	 * 
-	 * @param hexCell the cell to place
-	 * @throws HantoException if the cell is already occupied on the board or
-	 * the cell would not be adjacent to other occupied cells.
+	/* 
+	 * @see hanto.studentccasola.common.HantoBoard#placePiece(hanto.studentccasola.util.HexCell)
 	 */
+	@Override
 	public void placePiece(HexCell hexCell) throws HantoException
 	{
 		if (coordinateMap.containsKey(hexCell.getCoordinate()))
@@ -61,13 +63,10 @@ public class HantoBoard
 		}
 	}
 	
-	/**
-	 * Returns OK if there is no winner, RED_WINS if the blue butterfly
-	 * has been surrounded, BLUE_WINS if the red butterfly has been
-	 * surrounded, or DRAW if both butterflies have been surrounded.
-	 * 
-	 * @return the current state of the board
+	/* 
+	 * @see hanto.studentccasola.common.HantoBoard#getBoardState()
 	 */
+	@Override
 	public MoveResult getBoardState() {
 		MoveResult state = MoveResult.OK;
 		for (HexCell cell : coordinateMap.values())
@@ -95,29 +94,36 @@ public class HantoBoard
 		return state;
 	}
 	
-	/**
-	 * @return the cells currently occupied on the board
+	/* 
+	 * @see hanto.studentccasola.common.HantoBoard#getCellAtCoordinate(hanto.util.HantoCoordinate)
 	 */
+	public HexCell getCellAtCoordinate(HantoCoordinate coordinate)
+	{
+		return coordinateMap.get(new HexCoordinate(coordinate.getX(), coordinate.getY()));
+	}
+	
+	/* 
+	 * @see hanto.studentccasola.common.HantoBoard#getCells()
+	 */
+	@Override
 	public Collection<HexCell> getCells()
 	{
 		return coordinateMap.values();
 	}
 	
-	/**
-	 * @return the number of cells currently occupied on the board
+	/* 
+	 * @see hanto.studentccasola.common.HantoBoard#getNumOccupiedCells()
 	 */
+	@Override
 	public int getNumOccupiedCells()
 	{
 		return coordinateMap.values().size();
 	}
-	
-	/**
-	 * Determines if the given cell would be adjacent to other cells
-	 * if it were in the board.
-	 * 
-	 * @param cell the cell to check for adjacency
-	 * @return true if the cell would be adjacent to other cells, false otherwise
+		
+	/* 
+	 * @see hanto.studentccasola.common.HantoBoard#isAdjacent(hanto.studentccasola.util.HexCell)
 	 */
+	@Override
 	public boolean isAdjacent(HexCell cell)
 	{
 		boolean isAdjacent = false;
@@ -126,6 +132,17 @@ public class HantoBoard
 			isAdjacent = true;
 		}
 		return isAdjacent;
+	}
+	
+	@Override
+	public String toString()
+	{
+		String retVal = "";
+		for (HexCell cell : coordinateMap.values())
+		{
+			retVal += cell.toString() + "\n";
+		}
+		return retVal;
 	}
 	
 	/**

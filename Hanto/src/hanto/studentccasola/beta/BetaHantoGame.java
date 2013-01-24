@@ -16,7 +16,8 @@ import java.util.Map;
 
 import hanto.common.HantoException;
 import hanto.common.HantoGame;
-import hanto.studentccasola.util.HantoBoard;
+import hanto.studentccasola.common.HantoBoard;
+import hanto.studentccasola.util.BasicHantoBoard;
 import hanto.studentccasola.util.HexCell;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
@@ -232,7 +233,7 @@ public class BetaHantoGame implements HantoGame
 	private void initializeFields()
 	{
 		turn = HantoPlayerColor.BLUE;
-		board = new HantoBoard();
+		board = new BasicHantoBoard();
 		pieces = new HashMap<HantoPlayerColor,List<HantoPieceType>>();
 		distributePieces();
 		round = 1;

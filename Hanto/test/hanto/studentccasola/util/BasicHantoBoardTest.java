@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import hanto.common.HantoException;
-import hanto.studentccasola.util.HantoBoard;
+import hanto.studentccasola.util.BasicHantoBoard;
 import hanto.studentccasola.util.HexCell;
 import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoPieceType;
@@ -26,15 +26,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests for the HantoBoard class.
+ * Tests for the BasicHantoBoard class.
  *
  * @author Chris Casola
  * @version Jan 23, 2013
  */
-public class HantoBoardTest
+public class BasicHantoBoardTest
 {
-
-	private HantoBoard board;
+	private BasicHantoBoard board;
 
 	/**
 	 * @throws java.lang.Exception
@@ -42,11 +41,9 @@ public class HantoBoardTest
 	@Before
 	public void setUp() throws Exception
 	{
-		board = new HantoBoard();
+		board = new BasicHantoBoard();
 	}
-	
-	// NO LONGER NEEDED IF COVERAGE IS GOOD
-	/*
+
 	@Test
 	public void gameBoardStateDrawIfBothButterfliesSurrounded() throws HantoException
 	{
@@ -56,15 +53,15 @@ public class HantoBoardTest
 		board.placePiece(new HexCell(new HexCoordinate(-2,1), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		board.placePiece(new HexCell(new HexCoordinate(-2,2), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		board.placePiece(new HexCell(new HexCoordinate(-1,2), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
-		
+
 		board.placePiece(new HexCell(new HexCoordinate(0,1), HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY));
 		board.placePiece(new HexCell(new HexCoordinate(0,2), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		board.placePiece(new HexCell(new HexCoordinate(1,1), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		board.placePiece(new HexCell(new HexCoordinate(1,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
-		
+
 		assertEquals(MoveResult.DRAW, board.getBoardState());
-	}*/
-	
+	}
+
 	@Test
 	public void gameBoardStateBlueWinsIfRedButterflySurrounded() throws HantoException
 	{
@@ -77,7 +74,7 @@ public class HantoBoardTest
 		board.placePiece(new HexCell(new HexCoordinate(0,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		assertEquals(MoveResult.BLUE_WINS, board.getBoardState());
 	}
-	
+
 	@Test
 	public void gameBoardStateOKIfNoButterflyIsSurrounded() throws HantoException
 	{
@@ -86,7 +83,7 @@ public class HantoBoardTest
 		board.placePiece(new HexCell(new HexCoordinate(0,1), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		assertEquals(MoveResult.OK, board.getBoardState());
 	}
-	
+
 	/**
 	 * Determine if a cell is adjacent to at least one other cell
 	 * 
@@ -99,11 +96,11 @@ public class HantoBoardTest
 		HexCell hexCell2 = new HexCell(new HexCoordinate(-1,2), HantoPlayerColor.BLUE, HantoPieceType.SPARROW);
 		board.placePiece(hexCell1);
 		board.placePiece(hexCell2);
-		
+
 		assertTrue(board.isAdjacent(new HexCell(new HexCoordinate(0,1), HantoPlayerColor.BLUE, HantoPieceType.SPARROW)));
 		assertFalse(board.isAdjacent(new HexCell(new HexCoordinate(1,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW)));
 	}
-	
+
 	/**
 	 * Get adjacent cells when some cells are occupied
 	 * 
@@ -121,7 +118,7 @@ public class HantoBoardTest
 		assertTrue(neighbors.contains(hexCell1));
 		assertTrue(neighbors.contains(hexCell2));
 	}
-	
+
 	/**
 	 * Get adjacent cells when no cells are occupied
 	 */
@@ -155,7 +152,7 @@ public class HantoBoardTest
 	 * Should be able to get the coordinates of cells adjacent to the origin
 	 */
 	@Test
-	public void getCoordinatesAdjacentToOriginl()
+	public void getCoordinatesAdjacentToOrigin()
 	{
 		HexCoordinate coordinate = new HexCoordinate(0,0);
 
@@ -168,6 +165,20 @@ public class HantoBoardTest
 		expectedNeighbors.add(new HexCoordinate(1, -1));
 
 		assertTrue(coordinate.getAdjacentCoordinates().containsAll(expectedNeighbors));
+	}
+
+	@Test
+	public void boardCanBePrinted() throws HantoException
+	{
+		HexCell hexCell1 = new HexCell(new HexCoordinate(-1,1), HantoPlayerColor.BLUE, HantoPieceType.SPARROW);
+		HexCell hexCell2 = new HexCell(new HexCoordinate(-1,2), HantoPlayerColor.BLUE, HantoPieceType.SPARROW);
+		board.placePiece(hexCell1);
+		board.placePiece(hexCell2);
+
+		String expectedOutput = "Coordinate: (-1,1) Player: BLUE Piece: Sparrow\n" +
+				"Coordinate: (-1,2) Player: BLUE Piece: Sparrow\n";
+
+		assertEquals(expectedOutput, board.toString());
 	}
 
 	/**
@@ -196,9 +207,12 @@ public class HantoBoardTest
 	@Test
 	public void placePieceInBoard() throws HantoException
 	{
-		HexCell hexCell = new HexCell(new HexCoordinate(0,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW);
+		HexCoordinate origin = new HexCoordinate(0,0);
+		HexCell hexCell = new HexCell(origin, HantoPlayerColor.BLUE, HantoPieceType.SPARROW);
+		assertNull(board.getCellAtCoordinate(origin));
 		board.placePiece(hexCell);
 		assertTrue(board.getCells().contains(hexCell));
+		assertEquals(hexCell, board.getCellAtCoordinate(origin));
 	}
 
 	/**
