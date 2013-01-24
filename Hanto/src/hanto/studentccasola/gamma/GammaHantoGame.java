@@ -11,15 +11,19 @@ package hanto.studentccasola.gamma;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import hanto.common.HantoException;
 import hanto.common.HantoGame;
 import hanto.studentccasola.common.HantoBoard;
+import hanto.studentccasola.rules.*;
 import hanto.studentccasola.util.BasicHantoBoard;
+import hanto.studentccasola.util.GameState;
+import hanto.studentccasola.util.HantoRule;
 import hanto.studentccasola.util.HexCell;
-import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
@@ -60,6 +64,9 @@ public class GammaHantoGame implements HantoGame
 
 	/** The current state of the game: either OK, RED_WINS, BLUE_WINS, or DRAW */
 	private MoveResult gameState;
+	
+	/** The rules enforced by this game */
+	private Set<HantoRule> rules;
 
 	/**
 	 * Constructs a new GammaHantoGame with Blue moving first.
@@ -237,52 +244,21 @@ public class GammaHantoGame implements HantoGame
 	}
 
 	/**
-	 * Verify that placing the given piece type at the given location for
-	 * the current player would not violate any of the rules of Beta Hanto.
+	 * Verify that the current potential move would not violate
+	 * any of the rules of this game.
 	 * 
-	 * @param to the destination coordinate
+	 * @param from the location of the piece to move
+	 * @param to the location to move the piece to
 	 * @param pieceType the type of piece
-	 * @throws HantoException if one of the rules is violated
+	 * @throws HantoException if any rule is violated
 	 */
 	private void checkAdherenceToRules(HantoCoordinate from, HantoCoordinate to, 
 			HantoPieceType pieceType) throws HantoException
 	{
-		final HexCell currentMove = new HexCell(to, turn, pieceType);
-		final int numOccupiedCells = board.getNumOccupiedCells();
-
-		if (numOccupiedCells < 1 && (to.getX() != 0 || to.getY() != 0))
+		final GameState currentState = new GameState(board, from, to, pieceType, turn, round, pieces);
+		for (HantoRule rule : rules)
 		{
-			throw new HantoException("First move must be at (0,0)");
-		}
-		if (!board.isAdjacent(currentMove) && numOccupiedCells > 0)
-		{
-			throw new HantoException("Pieces must be placed adjacent to other pieces.");
-		}
-		if (round == 4 && pieceType != HantoPieceType.BUTTERFLY && 
-				pieces.get(turn).contains(HantoPieceType.BUTTERFLY))
-		{
-			throw new HantoException("You must play your butterfly before or during round 4.");
-		}
-
-		if (from != null)
-		{
-			if (board.getCellAtCoordinate(from).getPiece() != pieceType)
-			{
-				throw new HantoException("There is no piece of the specified type at the given from coordinate.");
-			}
-			if (pieceType == HantoPieceType.BUTTERFLY &&
-					!(new HexCoordinate(from).getAdjacentCoordinates().contains(to)))
-			{
-				throw new HantoException("Butterfly can only walk one hex at a time.");
-			}
-			if (board.getCellAtCoordinate(from).getPlayer() != turn)
-			{
-				throw new HantoException("You cannot move another player's butterfly.");
-			}
-			if (pieceType != HantoPieceType.BUTTERFLY)
-			{
-				throw new HantoException("Only butterflies may move in this game.");
-			}
+			rule.validate(currentState);
 		}
 	}
 
@@ -297,5 +273,18 @@ public class GammaHantoGame implements HantoGame
 		distributePieces();
 		round = 1;
 		gameState = MoveResult.OK;
+		rules = new HashSet<HantoRule>();
+		buildRuleList();
+	}
+	
+	private void buildRuleList()
+	{
+		rules.add(new ButterflyCanWalkOneHex());
+		rules.add(new CannotMoveOpponentsPiece());
+		rules.add(new FirstMoveAtOrigin());
+		rules.add(new MustSpecifyTypeOfPieceToMove());
+		rules.add(new OnlyButterfliesMayMove());
+		rules.add(new PiecesMustBeAdjacent());
+		rules.add(new PlayButterflyByRoundFour());
 	}
 }
