@@ -175,6 +175,14 @@ public class GammaHantoGame implements HantoGame
 	{
 		return board;
 	}
+	
+	/**
+	 * @param board the new game board
+	 */
+	protected void setBoard(HantoBoard board)
+	{
+		this.board = board;
+	}
 
 	/**
 	 * Make sure the user has one of the given pieces so he/she can place it. Remove

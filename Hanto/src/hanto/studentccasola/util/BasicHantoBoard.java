@@ -204,6 +204,14 @@ public class BasicHantoBoard implements HantoBoard
 		}
 		return neighbors;
 	}
+	
+	/**
+	 * @return  the map containing all of the cells on the board
+	 */
+	protected Map<HexCoordinate, HexCell> getCoordinateMap()
+	{
+		return coordinateMap;
+	}
 
 	/**
 	 * Ensure that the board is contiguous. That is all cells make up one
