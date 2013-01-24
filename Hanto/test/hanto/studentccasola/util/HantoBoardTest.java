@@ -7,7 +7,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.beta;
+package hanto.studentccasola.util;
 
 import static org.junit.Assert.*;
 
@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import hanto.common.HantoException;
-import hanto.studentccasola.alpha.HexCell;
-import hanto.studentccasola.alpha.HexCoordinate;
+import hanto.studentccasola.util.HantoBoard;
+import hanto.studentccasola.util.HexCell;
+import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -44,15 +45,17 @@ public class HantoBoardTest
 		board = new HantoBoard();
 	}
 	
+	// NO LONGER NEEDED IF COVERAGE IS GOOD
+	/*
 	@Test
 	public void gameBoardStateDrawIfBothButterfliesSurrounded() throws HantoException
 	{
+		board.placePiece(new HexCell(new HexCoordinate(0,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		board.placePiece(new HexCell(new HexCoordinate(-1,1), HantoPlayerColor.RED, HantoPieceType.BUTTERFLY));
 		board.placePiece(new HexCell(new HexCoordinate(-1,0), HantoPlayerColor.RED, HantoPieceType.SPARROW));
 		board.placePiece(new HexCell(new HexCoordinate(-2,1), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		board.placePiece(new HexCell(new HexCoordinate(-2,2), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		board.placePiece(new HexCell(new HexCoordinate(-1,2), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
-		board.placePiece(new HexCell(new HexCoordinate(0,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		
 		board.placePiece(new HexCell(new HexCoordinate(0,1), HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY));
 		board.placePiece(new HexCell(new HexCoordinate(0,2), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
@@ -60,7 +63,7 @@ public class HantoBoardTest
 		board.placePiece(new HexCell(new HexCoordinate(1,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW));
 		
 		assertEquals(MoveResult.DRAW, board.getBoardState());
-	}
+	}*/
 	
 	@Test
 	public void gameBoardStateBlueWinsIfRedButterflySurrounded() throws HantoException

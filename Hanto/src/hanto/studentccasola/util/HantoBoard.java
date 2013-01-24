@@ -7,11 +7,9 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.beta;
+package hanto.studentccasola.util;
 
 import hanto.common.HantoException;
-import hanto.studentccasola.alpha.HexCell;
-import hanto.studentccasola.alpha.HexCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -48,7 +46,8 @@ public class HantoBoard
 	 * already occupied on the board.
 	 * 
 	 * @param hexCell the cell to place
-	 * @throws HantoException if the cell is already occupied on the board
+	 * @throws HantoException if the cell is already occupied on the board or
+	 * the cell would not be adjacent to other occupied cells.
 	 */
 	public void placePiece(HexCell hexCell) throws HantoException
 	{
@@ -97,11 +96,19 @@ public class HantoBoard
 	}
 	
 	/**
-	 * @return the cells currently in the board
+	 * @return the cells currently occupied on the board
 	 */
 	public Collection<HexCell> getCells()
 	{
 		return coordinateMap.values();
+	}
+	
+	/**
+	 * @return the number of cells currently occupied on the board
+	 */
+	public int getNumOccupiedCells()
+	{
+		return coordinateMap.values().size();
 	}
 	
 	/**
@@ -111,7 +118,7 @@ public class HantoBoard
 	 * @param cell the cell to check for adjacency
 	 * @return true if the cell would be adjacent to other cells, false otherwise
 	 */
-	protected boolean isAdjacent(HexCell cell)
+	public boolean isAdjacent(HexCell cell)
 	{
 		boolean isAdjacent = false;
 		if (getNeighbors(cell.getCoordinate()).size() > 0)

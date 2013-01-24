@@ -7,7 +7,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.alpha;
+package hanto.studentccasola.util;
 
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
@@ -41,6 +41,14 @@ public class HexCell
 		this.piece = piece;
 	}
 	
+	/**
+	 * Alternate constructor to accept a HantoCoordinate in place of a HexCoordinate. A
+	 * HexCoordinant is created based on the given HantoCoordinate.
+	 * 
+	 * @param coordinate the coordinate of this cell
+	 * @param player the player whose piece occupies this cell
+	 * @param piece the piece that occupies this cell
+	 */
 	public HexCell(HantoCoordinate coordinate, HantoPlayerColor player, HantoPieceType piece)
 	{
 		this(new HexCoordinate(coordinate.getX(), coordinate.getY()), player, piece);
