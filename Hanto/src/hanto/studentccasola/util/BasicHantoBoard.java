@@ -19,6 +19,7 @@ import hanto.util.MoveResult;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,11 +35,10 @@ import java.util.Set;
  */
 public class BasicHantoBoard implements HantoBoard
 {
-	
+
 	/** A map with coordinate as the key and cells as the value. */
 	private final Map<HexCoordinate, HexCell> coordinateMap;
-	
-	
+
 	/**
 	 * Constructs a hanto board that initially contains no cells
 	 */
@@ -57,12 +57,48 @@ public class BasicHantoBoard implements HantoBoard
 		{
 			throw new HantoException("This cell already contains a piece.");
 		}
-		else
+		else if (isAdjacent(hexCell) || getNumOccupiedCells() < 1)
 		{
 			coordinateMap.put(hexCell.getCoordinate(), hexCell);
 		}
+		else
+		{
+			throw new HantoException("This piece would not be adjacent to other pieces.");
+		}
 	}
-	
+
+	/* 
+	 * @see hanto.studentccasola.common.HantoBoard#movePiece(hanto.util.HantoCoordinate, hanto.util.HantoCoordinate)
+	 */
+	public void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException
+	{
+		// Get the cell currently at the from coordinate
+		final HexCell oldCell = coordinateMap.get(from);
+		if (oldCell == null)
+		{
+			throw new HantoException("There is no cell at the given from coordinate");
+		}
+
+		// Create the new cell, replacing the coordinate of the old cell
+		final HexCell newCell = new HexCell(to, oldCell.getPlayer(), oldCell.getPiece());
+
+		// Remove the old cell
+		coordinateMap.remove(from);
+
+		// Place the new cell in the board
+		try
+		{
+			placePiece(newCell);
+			checkContiguity();
+			
+		}
+		catch (HantoException e) // error occurred placing the new cell, put the old one back
+		{
+			coordinateMap.put(oldCell.getCoordinate(), oldCell);
+			throw new HantoException("Cannot place new cell.", e);
+		}
+	}
+
 	/* 
 	 * @see hanto.studentccasola.common.HantoBoard#getBoardState()
 	 */
@@ -93,7 +129,7 @@ public class BasicHantoBoard implements HantoBoard
 		}
 		return state;
 	}
-	
+
 	/* 
 	 * @see hanto.studentccasola.common.HantoBoard#getCellAtCoordinate(hanto.util.HantoCoordinate)
 	 */
@@ -101,7 +137,7 @@ public class BasicHantoBoard implements HantoBoard
 	{
 		return coordinateMap.get(new HexCoordinate(coordinate.getX(), coordinate.getY()));
 	}
-	
+
 	/* 
 	 * @see hanto.studentccasola.common.HantoBoard#getCells()
 	 */
@@ -110,7 +146,7 @@ public class BasicHantoBoard implements HantoBoard
 	{
 		return coordinateMap.values();
 	}
-	
+
 	/* 
 	 * @see hanto.studentccasola.common.HantoBoard#getNumOccupiedCells()
 	 */
@@ -119,7 +155,7 @@ public class BasicHantoBoard implements HantoBoard
 	{
 		return coordinateMap.values().size();
 	}
-		
+
 	/* 
 	 * @see hanto.studentccasola.common.HantoBoard#isAdjacent(hanto.studentccasola.util.HexCell)
 	 */
@@ -133,7 +169,10 @@ public class BasicHantoBoard implements HantoBoard
 		}
 		return isAdjacent;
 	}
-	
+
+	/* 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString()
 	{
@@ -144,7 +183,7 @@ public class BasicHantoBoard implements HantoBoard
 		}
 		return retVal;
 	}
-	
+
 	/**
 	 * Returns the set of cells currently in the board that are neighbors
 	 * of the given coordinate.
@@ -164,5 +203,44 @@ public class BasicHantoBoard implements HantoBoard
 			}
 		}
 		return neighbors;
+	}
+	
+	/**
+	 * @return  the map containing all of the cells on the board
+	 */
+	protected Map<HexCoordinate, HexCell> getCoordinateMap()
+	{
+		return coordinateMap;
+	}
+
+	/**
+	 * Ensure that the board is contiguous. That is all cells make up one
+	 * contiguous group.
+	 * @throws HantoException if the board is not contiguous
+	 */
+	private void checkContiguity() throws HantoException
+	{
+		final Set<HexCoordinate> visitedCoords = new HashSet<HexCoordinate>();
+		final Iterator<HexCoordinate> coordIterator = coordinateMap.keySet().iterator();
+		if (coordIterator.hasNext())
+		{
+			visitCoordinate(visitedCoords, coordIterator.next());
+			if (!visitedCoords.containsAll(coordinateMap.keySet()))
+			{
+				throw new HantoException("The board is not contiguous.");
+			}
+		}
+	}
+
+	private void visitCoordinate(Set<HexCoordinate> visitedCoords, HexCoordinate currentCoord)
+	{
+		if (!visitedCoords.contains(currentCoord))
+		{
+			visitedCoords.add(currentCoord);
+			for (HexCell cell : getNeighbors(currentCoord))
+			{
+				visitCoordinate(visitedCoords, cell.getCoordinate());
+			}
+		}
 	}
 }

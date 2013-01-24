@@ -1,3 +1,13 @@
+GAMMA HANTO
+X Allow butterfly to walk one hex (if it is unoccupied)
+X Do not allow sparrows to walk
+- End after ten turns if the game has not already ended
+
+NICE TO HAVE
+- Refactor rules into rulesets
+
+
+
 BETA HANTO
 X blue moves first by default
 X call to initialize() can specify that red moves first
