@@ -14,6 +14,7 @@ import java.util.List;
 
 import hanto.common.HantoException;
 import hanto.common.HantoGame;
+import hanto.studentccasola.util.HexCell;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
@@ -69,31 +70,29 @@ public class AlphaHantoGame implements HantoGame
 	public MoveResult makeMove(HantoPieceType pieceType, HantoCoordinate from,
 			HantoCoordinate to) throws HantoException
 	{
-		if (pieceType == HantoPieceType.BUTTERFLY) // only butterfly pieces are valid
-		{
-			// make sure if this is blue's turn, they place their piece at (0,0)
-			if (turn == HantoPlayerColor.BLUE && !(to.getX() == 0 && to.getY() == 0))
-			{
-				throw new HantoException("Blue must place a butterfly at (0,0)");
-			}
-			// make sure this piece will be adjacent to another piece on the board
-			else if (!isAdjacent(to))
-			{
-				throw new HantoException("Piece must be adjacent to another piece on the board.");
-			}
-			
-			// add the piece to the board
-			board.add(new HexCell(to, turn, pieceType));
-			
-			// flip the turn status to the opposite player
-			turn = (turn == HantoPlayerColor.BLUE) ? HantoPlayerColor.RED : HantoPlayerColor.BLUE;
-			
-			return checkGameState(); // return the state of the game
-		}
-		else
+		// only butterfly pieces are valid
+		if (pieceType != HantoPieceType.BUTTERFLY)
 		{
 			throw new HantoException("Only butterflies may be used in this game.");
 		}
+		// make sure if this is blue's turn, they place their piece at (0,0)
+		if (turn == HantoPlayerColor.BLUE && !(to.getX() == 0 && to.getY() == 0))
+		{
+			throw new HantoException("Blue must place a butterfly at (0,0)");
+		}
+		// make sure this piece will be adjacent to another piece on the board
+		else if (!isAdjacent(to))
+		{
+			throw new HantoException("Piece must be adjacent to another piece on the board.");
+		}
+		
+		// add the piece to the board
+		board.add(new HexCell(to, turn, pieceType));
+		
+		// flip the turn status to the opposite player
+		turn = (turn == HantoPlayerColor.BLUE) ? HantoPlayerColor.RED : HantoPlayerColor.BLUE;
+		
+		return checkGameState(); // return the state of the game
 	}
 
 	/*
