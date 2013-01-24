@@ -35,9 +35,20 @@ public class HexCoordinate implements HantoCoordinate
 	 * @param xPos the x coordinate
 	 * @param yPos the y coordinate
 	 */
-	public HexCoordinate(int xPos, int yPos) {
+	public HexCoordinate(int xPos, int yPos)
+	{
 		this.xPos = xPos;
 		this.yPos = yPos;
+	}
+	
+	/**
+	 * Constructs a new HexCoordinate based on the other HantoCoordinate
+	 * @param other the HantoCoordinate to duplicate
+	 */
+	public HexCoordinate(HantoCoordinate other)
+	{
+		xPos = other.getX();
+		yPos = other.getY();
 	}
 	
 	/**

@@ -7,47 +7,137 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.beta;
+package hanto.studentccasola.gamma;
 
 import static org.junit.Assert.*;
 import hanto.common.HantoException;
+import hanto.studentccasola.gamma.GammaHantoGame;
+import hanto.studentccasola.util.HexCell;
 import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- *
+ * Tests for the gamma version of Hanto
  *
  * @author Chris Casola
  * @version Jan 22, 2013
  */
-public class BetaHantoGameTest
+public class GammaHantoGameTest
 {
 
-	private BetaHantoGame game;
+	private GammaHantoGame game;
 
 	@Before
 	public void setUp()
 	{
-		game = new BetaHantoGame();
+		game = new GammaHantoGame();
 	}
 	
 	@Test
-	public void endGameWithDrawAfterSixRoundWhenButterflyNotSurrounded() throws HantoException
+	public void gameEndsAfterTenTurns()
+	{
+		
+	}
+	
+	@Test
+	public void allowButterflyToMoveOneCell() throws HantoException
 	{
 		game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,0));
-		game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,1));
-		
-		for (int i = 0; i < 9; i++)
+		game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,1));
+		game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(0,0), new HexCoordinate(1,0));
+		assertNull(game.getBoard().getCellAtCoordinate(new HexCoordinate(0,0)));
+		assertEquals(new HexCell(new HexCoordinate(1,0), HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY), game.getBoard().getCellAtCoordinate(new HexCoordinate(1,0)));
+	}
+	
+	@Test(expected=HantoException.class)
+	public void cannotMovePieceIfFromCellDoesNotContainSamePieceTypeAsSpecified() throws HantoException
+	{
+		try
 		{
-			assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,i+2)));
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,0));
+			game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,1));
 		}
-		assertEquals(MoveResult.DRAW, game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,11)));
+		catch (HantoException e)
+		{
+			fail("The above moves should succeed.");
+		}
+		game.makeMove(HantoPieceType.SPARROW, new HexCoordinate(0,0), new HexCoordinate(0,2));
+	}
+	
+	@Test(expected=HantoException.class)
+	public void butterflyCannotMoveMoreThanOneCell() throws HantoException
+	{
+		try
+		{
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,0));
+			game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,1));
+			game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,2));
+			game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,3));
+		}
+		catch (HantoException e)
+		{
+			fail("The above moves should succeed.");
+		}
+		game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(0,0), new HexCoordinate(0,4));
+	}
+	
+	@Test(expected=HantoException.class)
+	public void cannotMoveOtherPlayersButterfly() throws HantoException
+	{
+		try
+		{
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,0));
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,1));
+		}
+		catch (HantoException e)
+		{
+			fail("The above moves should succeed.");
+		}
+		game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(0,1), new HexCoordinate(1,0));
+	}
+	
+	@Test(expected=HantoException.class)
+	public void cannotMoveSparrows() throws HantoException
+	{
+		try
+		{
+			game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,0));
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,1));
+		}
+		catch (HantoException e)
+		{
+			fail("The above moves should succeed.");
+		}
+		game.makeMove(HantoPieceType.SPARROW, new HexCoordinate(0,0), new HexCoordinate(1,0));
+	}
+	
+	@Test
+	public void endGameWithDrawAfterTenRoundWhenButterflyNotSurrounded() throws HantoException
+	{
+		game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,0));
+		game.makeMove(HantoPieceType.SPARROW, null, new HexCoordinate(0,1));
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(-1,0));
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(1,0));
+		
+		for (int i = 0; i < 3; i++)
+		{
+			assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(-1,0), new HexCoordinate(-1,1)));
+			assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(1,0), new HexCoordinate(1,1)));
+			assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(-1,1), new HexCoordinate(-1,0)));
+			assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(1,1), new HexCoordinate(1,0)));
+		}
+		
+		assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(-1,0), new HexCoordinate(-1,1)));
+		assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(1,0), new HexCoordinate(1,1)));
+		assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(-1,1), new HexCoordinate(-1,0)));
+		assertEquals(10, game.getRound());
+		assertEquals(MoveResult.DRAW, game.makeMove(HantoPieceType.BUTTERFLY, new HexCoordinate(1,1), new HexCoordinate(1,0)));
+		assertEquals(11, game.getRound());
 	}
 
 	@Test
@@ -143,13 +233,6 @@ public class BetaHantoGameTest
 			fail("Each person gets one butterfly, neither player has used more than one.");
 		}
 		game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,2));
-	}
-
-	@Ignore
-	@Test
-	public void doNotModifyGameBoardAfterGameEndsWithSuccessiveCallsToMakeMove()
-	{
-		fail();
 	}
 
 	@Test

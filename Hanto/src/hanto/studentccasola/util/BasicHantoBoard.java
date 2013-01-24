@@ -39,7 +39,6 @@ public class BasicHantoBoard implements HantoBoard
 	/** A map with coordinate as the key and cells as the value. */
 	private final Map<HexCoordinate, HexCell> coordinateMap;
 
-
 	/**
 	 * Constructs a hanto board that initially contains no cells
 	 */
@@ -62,7 +61,8 @@ public class BasicHantoBoard implements HantoBoard
 		{
 			coordinateMap.put(hexCell.getCoordinate(), hexCell);
 		}
-		else {
+		else
+		{
 			throw new HantoException("This piece would not be adjacent to other pieces.");
 		}
 	}
@@ -92,7 +92,7 @@ public class BasicHantoBoard implements HantoBoard
 			checkContiguity();
 			
 		}
-		catch (HantoException e) // error occured placing the new cell, put the old one back
+		catch (HantoException e) // error occurred placing the new cell, put the old one back
 		{
 			coordinateMap.put(oldCell.getCoordinate(), oldCell);
 			throw new HantoException("Cannot place new cell.", e);
@@ -170,6 +170,9 @@ public class BasicHantoBoard implements HantoBoard
 		return isAdjacent;
 	}
 
+	/* 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString()
 	{

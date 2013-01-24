@@ -7,7 +7,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.beta;
+package hanto.studentccasola.gamma;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,46 +19,52 @@ import hanto.common.HantoGame;
 import hanto.studentccasola.common.HantoBoard;
 import hanto.studentccasola.util.BasicHantoBoard;
 import hanto.studentccasola.util.HexCell;
+import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
 
 /**
- * This is the beta version of Hanto as specified in the Hanto Developer's
+ * This is the gamma version of Hanto as specified in the Hanto Developer's
  * Guide. There are two types of pieces: butterflies and sparrows. Each player
- * has one butterfly and five sparrows. All pieces have the same abilities: they
- * may be placed on the board but not moved. Blue moves first by default. Each
- * player's butterfly must be placed on the board by the fourth turn.
+ * has one butterfly and five sparrows. Blue moves first by default. Each
+ * player's butterfly must be placed on the board by the fourth turn. Butterflies
+ * may walk one cell. The game ends after 10 rounds.
  *
  * @author Chris Casola
  * @version Jan 22, 2013
  */
-public class BetaHantoGame implements HantoGame
+public class GammaHantoGame implements HantoGame
 {
-	
+
 	/** The number of sparrows alloted to each player */
 	public static final int NUM_SPARROWS = 5;
 	
+	public static final int MAX_NUM_ROUNDS = 10;
+
 	/** The color of the players whose turn it is */
 	private HantoPlayerColor turn;
 	
+	/** The color of the player whose turn was first */
+	private HantoPlayerColor wentFirst;
+
 	/** The board, which contains all pieces that have been placed */
 	private HantoBoard board;
-	
+
 	/** A map containing a list of pieces for each player that have not been placed yet. */
 	private Map<HantoPlayerColor,List<HantoPieceType>> pieces;
-	
-	/** The current round (there are 6 in this version of Hanto) */
+
+	/** The current round (there is a max of 10 in this version of Hanto) */
 	private int round;
-	
+
 	/** The current state of the game: either OK, RED_WINS, BLUE_WINS, or DRAW */
 	private MoveResult gameState;
-	
+
 	/**
-	 * Constructs a new BetaHantoGame with Blue moving first.
+	 * Constructs a new GammaHantoGame with Blue moving first.
 	 */
-	public BetaHantoGame()
+	public GammaHantoGame()
 	{
 		initializeFields();
 	}
@@ -70,7 +76,7 @@ public class BetaHantoGame implements HantoGame
 	public void initialize(HantoPlayerColor firstPlayer) throws HantoException
 	{
 		initializeFields();
-		
+
 		// Set the current turn based on the value of firstPlayer
 		if (firstPlayer != null)
 		{
@@ -78,11 +84,11 @@ public class BetaHantoGame implements HantoGame
 			{
 				throw new HantoException("Player color must be blue or red.");
 			}
-			turn = firstPlayer;
+			turn = wentFirst = firstPlayer;
 		}
 		else
 		{
-			turn = HantoPlayerColor.BLUE;
+			turn = wentFirst = HantoPlayerColor.BLUE;
 		}
 	}
 
@@ -96,28 +102,36 @@ public class BetaHantoGame implements HantoGame
 	{
 		if (gameState == MoveResult.OK) // only allow moves if the game has not ended
 		{
-			final int numOccupiedCells = board.getNumOccupiedCells();
-			
 			// Verify this move does not violate the rules
-			checkAdherenceToRules(to, pieceType);
-			
-			// Make sure the player has this piece to play
-			accountForPiece(pieceType);
-			
-			// Place the piece on the board
-			board.placePiece(new HexCell(to, turn, pieceType));
-			
+			checkAdherenceToRules(from, to, pieceType);
+
+			if (from != null) // move the piece
+			{
+				board.movePiece(from, to);
+			}
+			else // place the piece
+			{
+				// Make sure the player has this piece to play
+				accountForPiece(pieceType);
+
+				// Place the piece on the board
+				board.placePiece(new HexCell(to, turn, pieceType));
+
+				// Remove the piece from the player's available list
+				usePiece(pieceType);
+			}
+
 			// Switch the turn to the other player
 			turn = (turn == HantoPlayerColor.BLUE) ? HantoPlayerColor.RED : HantoPlayerColor.BLUE;
-			
+
 			// Increment the round if both players have had their turn
-			round += numOccupiedCells % 2;
+			round += (turn == wentFirst) ? 1 : 0;
 			
 			// Get the state of the game board
 			gameState = board.getBoardState();
-			
-			// End the game if round 6 is complete
-			if (round > 6)
+
+			// End the game if round MAX_NUM_ROUNDS is complete
+			if (round > MAX_NUM_ROUNDS)
 			{
 				gameState = (gameState != MoveResult.OK) ? gameState : MoveResult.DRAW; 
 			}
@@ -125,7 +139,7 @@ public class BetaHantoGame implements HantoGame
 		else {
 			throw new HantoException("The game is over, no more moves can be played.");
 		}
-		
+
 		return gameState;
 	}
 
@@ -145,7 +159,7 @@ public class BetaHantoGame implements HantoGame
 	{
 		return turn;
 	}
-	
+
 	/**
 	 * @return the number of the current round (between 1 and 6)
 	 */
@@ -153,7 +167,15 @@ public class BetaHantoGame implements HantoGame
 	{
 		return round;
 	}
-	
+
+	/**
+	 * @return the game board
+	 */
+	protected HantoBoard getBoard()
+	{
+		return board;
+	}
+
 	/**
 	 * Make sure the user has one of the given pieces so he/she can place it. Remove
 	 * the piece from that user's list of available pieces to place.
@@ -168,11 +190,19 @@ public class BetaHantoGame implements HantoGame
 		{
 			throw new HantoException("You do not have any pieces remaining of this type.");
 		}
-		else {
-			currentPlayersPieces.remove(piece);
-		}
 	}
-	
+
+	/**
+	 * Removes the give piece from the current player's list of available
+	 * pieces.
+	 * 
+	 * @param piece the piece to remove
+	 */
+	private void usePiece(HantoPieceType piece)
+	{
+		pieces.get(turn).remove(piece);
+	}
+
 	/**
 	 * Called when the game is initialized to divy up the pieces to each
 	 * player's list of available pieces.
@@ -185,19 +215,19 @@ public class BetaHantoGame implements HantoGame
 		// Give each player two butterflies
 		bluePieces.add(HantoPieceType.BUTTERFLY);
 		redPieces.add(HantoPieceType.BUTTERFLY);
-		
+
 		// Give each player NUM_SPARROWS sparrows
 		for (int i = 0; i < NUM_SPARROWS; i++)
 		{
 			bluePieces.add(HantoPieceType.SPARROW);
 			redPieces.add(HantoPieceType.SPARROW);
 		}
-		
+
 		pieces.put(HantoPlayerColor.BLUE, bluePieces);
 		pieces.put(HantoPlayerColor.RED, redPieces);
-		
+
 	}
-	
+
 	/**
 	 * Verify that placing the given piece type at the given location for
 	 * the current player would not violate any of the rules of Beta Hanto.
@@ -206,12 +236,12 @@ public class BetaHantoGame implements HantoGame
 	 * @param pieceType the type of piece
 	 * @throws HantoException if one of the rules is violated
 	 */
-	private void checkAdherenceToRules(HantoCoordinate to, HantoPieceType pieceType) 
-			throws HantoException
+	private void checkAdherenceToRules(HantoCoordinate from, HantoCoordinate to, 
+			HantoPieceType pieceType) throws HantoException
 	{
 		final HexCell currentMove = new HexCell(to, turn, pieceType);
 		final int numOccupiedCells = board.getNumOccupiedCells();
-		
+
 		if (numOccupiedCells < 1 && (to.getX() != 0 || to.getY() != 0))
 		{
 			throw new HantoException("First move must be at (0,0)");
@@ -225,14 +255,35 @@ public class BetaHantoGame implements HantoGame
 		{
 			throw new HantoException("You must play your butterfly before or during round 4.");
 		}
+
+		if (from != null)
+		{
+			if (board.getCellAtCoordinate(from).getPiece() != pieceType)
+			{
+				throw new HantoException("There is no piece of the specified type at the given from coordinate.");
+			}
+			if (pieceType == HantoPieceType.BUTTERFLY &&
+					!(new HexCoordinate(from).getAdjacentCoordinates().contains(to)))
+			{
+				throw new HantoException("Butterfly can only walk one hex at a time.");
+			}
+			if (board.getCellAtCoordinate(from).getPlayer() != turn)
+			{
+				throw new HantoException("You cannot move another player's butterfly.");
+			}
+			if (pieceType != HantoPieceType.BUTTERFLY)
+			{
+				throw new HantoException("Only butterflies may move in this game.");
+			}
+		}
 	}
-	
+
 	/**
 	 * Initializes all of the field values
 	 */
 	private void initializeFields()
 	{
-		turn = HantoPlayerColor.BLUE;
+		turn = wentFirst = HantoPlayerColor.BLUE;
 		board = new BasicHantoBoard();
 		pieces = new HashMap<HantoPlayerColor,List<HantoPieceType>>();
 		distributePieces();

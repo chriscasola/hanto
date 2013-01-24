@@ -1,6 +1,6 @@
 GAMMA HANTO
-- Allow butterfly to walk one hex (if it is unoccupied)
-- Do not allow sparrows to walk
+X Allow butterfly to walk one hex (if it is unoccupied)
+X Do not allow sparrows to walk
 - End after ten turns if the game has not already ended
 
 NICE TO HAVE
