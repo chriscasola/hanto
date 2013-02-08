@@ -30,7 +30,7 @@ public class CannotMoveOpponentsPiece implements HantoRule
 	public void validate(GameState state) throws HantoException
 	{
 		final HantoCoordinate from = state.getFrom();
-		if (from != null)
+		if (from != null && state.getBoard().getCellAtCoordinate(from) != null)
 		{
 			if (state.getBoard().getCellAtCoordinate(from).getPlayer() != state.getTurn())
 			{

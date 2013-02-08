@@ -280,6 +280,7 @@ public class GammaHantoGame implements HantoGame
 	private void buildRuleList()
 	{
 		rules.add(new ButterflyCanWalkOneHex());
+		rules.add(new CannotMoveFromUnoccupiedHex());
 		rules.add(new CannotMoveOpponentsPiece());
 		rules.add(new FirstMoveAtOrigin());
 		rules.add(new MustSpecifyTypeOfPieceToMove());

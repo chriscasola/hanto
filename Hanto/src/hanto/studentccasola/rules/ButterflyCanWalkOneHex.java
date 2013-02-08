@@ -9,6 +9,8 @@
  *******************************************************************************/
 package hanto.studentccasola.rules;
 
+import java.util.Set;
+
 import hanto.common.HantoException;
 import hanto.studentccasola.util.GameState;
 import hanto.studentccasola.util.HantoRule;
@@ -35,7 +37,7 @@ public class ButterflyCanWalkOneHex implements HantoRule
 		if (from != null)
 		{
 			if (state.getPieceType() == HantoPieceType.BUTTERFLY &&
-					!(new HexCoordinate(from).getAdjacentCoordinates().contains(state.getTo())))
+					!isMoveOneHexAway(from, state.getTo()))
 			{
 				throw new HantoException("Butterfly can only walk one hex at a time.");
 			}
@@ -43,4 +45,18 @@ public class ButterflyCanWalkOneHex implements HantoRule
 
 	}
 
+	private boolean isMoveOneHexAway(HantoCoordinate from, HantoCoordinate to)
+	{
+		boolean isNeighbor = false;
+		Set<HexCoordinate> neighbors = new HexCoordinate(from).getAdjacentCoordinates();
+		
+		for ( HexCoordinate cell : neighbors) {
+			if (cell.getX() == to.getX() && cell.getY() == to.getY()) {
+				isNeighbor = true;
+				break;
+			}
+		}
+		
+		return isNeighbor;
+	}
 }

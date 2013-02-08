@@ -73,7 +73,7 @@ public class BasicHantoBoard implements HantoBoard
 	public void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException
 	{
 		// Get the cell currently at the from coordinate
-		final HexCell oldCell = coordinateMap.get(from);
+		final HexCell oldCell = coordinateMap.get(new HexCoordinate(from));
 		if (oldCell == null)
 		{
 			throw new HantoException("There is no cell at the given from coordinate");
@@ -83,7 +83,7 @@ public class BasicHantoBoard implements HantoBoard
 		final HexCell newCell = new HexCell(to, oldCell.getPlayer(), oldCell.getPiece());
 
 		// Remove the old cell
-		coordinateMap.remove(from);
+		coordinateMap.remove(new HexCoordinate(from));
 
 		// Place the new cell in the board
 		try

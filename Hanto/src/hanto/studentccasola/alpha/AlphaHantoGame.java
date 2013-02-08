@@ -56,10 +56,6 @@ public class AlphaHantoGame implements HantoGame
 			board = new ArrayList<HexCell>();
 			turn = firstPlayer;
 		}
-		else {
-			throw new HantoException("Game cannot be initialized with RED as the first player.");
-		}
-
 	}
 
 	/*

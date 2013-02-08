@@ -164,8 +164,8 @@ public class AlphaHantoGameTest
 	 * Make sure game cannot be initialized with red as the first player
 	 * @throws HantoException 
 	 */
-	@Test(expected=HantoException.class)
-	public void boardMustBeInitializedWithBlueFirst() throws HantoException {
+	@Test
+	public void initializeWithRedHasNoEffect() throws HantoException {
 		game.initialize(HantoPlayerColor.RED);
 	}
 	
