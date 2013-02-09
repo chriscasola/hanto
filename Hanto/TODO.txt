@@ -1,5 +1,6 @@
 
 REFACTORING PRE-DELTA HANTO
+X Refactor GammaHantoGame into AbstractHantoGame
 X Ensure HexCoordinate is used throughout the code (don't trust HantoCoordinates that are passed in as they may not override equals)
 X Refactor rules into rulesets
 

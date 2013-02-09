@@ -57,14 +57,7 @@ public class BasicHantoBoard implements HantoBoard
 		{
 			throw new HantoException("This cell already contains a piece.");
 		}
-		else if (isAdjacent(hexCell.getCoordinate()) || getNumOccupiedCells() < 1)
-		{
-			coordinateMap.put(hexCell.getCoordinate(), hexCell);
-		}
-		else
-		{
-			throw new HantoException("This piece would not be adjacent to other pieces.");
-		}
+		coordinateMap.put(hexCell.getCoordinate(), hexCell);
 	}
 
 	/* 
