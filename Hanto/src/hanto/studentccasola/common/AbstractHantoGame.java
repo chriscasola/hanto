@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * This files was developed for CS4233: Object-Oriented Analysis & Design.
+ * The course was taken at Worcester Polytechnic Institute.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package hanto.studentccasola.common;
 
 import java.util.List;
@@ -11,6 +20,13 @@ import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
 
+/**
+ * An abstract Hanto game implementation that provides shared
+ * game functionality.
+ * 
+ * @author Chris
+ * @version Feb 9, 2013
+ */
 public abstract class AbstractHantoGame implements HantoGame
 {
 	/** The current state of the game: either OK, RED_WINS, BLUE_WINS, or DRAW */
@@ -22,7 +38,7 @@ public abstract class AbstractHantoGame implements HantoGame
 	/**
 	 * Construct a new game with Blue moving first
 	 */
-	public AbstractHantoGame()
+	protected AbstractHantoGame()
 	{
 		initializeFields();
 	}
@@ -97,7 +113,8 @@ public abstract class AbstractHantoGame implements HantoGame
 	 */
 	protected void accountForPiece(HantoPieceType piece) throws HantoException
 	{
-		final List<HantoPieceType> currentPlayersPieces = gameState.getPieces().get(gameState.getTurn());
+		final List<HantoPieceType> currentPlayersPieces = 
+				gameState.getPieces().get(gameState.getTurn());
 		if (!currentPlayersPieces.contains(piece))
 		{
 			throw new HantoException("You do not have any pieces remaining of this type.");

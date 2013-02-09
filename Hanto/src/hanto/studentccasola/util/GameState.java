@@ -10,7 +10,6 @@
 package hanto.studentccasola.util;
 
 import hanto.studentccasola.common.HantoBoard;
-import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -29,31 +28,40 @@ public class GameState
 {
 	public static final int MAX_NUM_ROUNDS = 10;
 	private final HantoBoard board;
-	HantoPlayerColor turn;
+	private HantoPlayerColor turn;
 	private int currentRound;
 	private final Map<HantoPlayerColor,List<HantoPieceType>> pieces;
 	private MoveResult gameStatus;
 	private HantoPlayerColor firstPlayer;
 	
 	/**
+	 * Construct the game state
+	 * 
 	 * @param board the board
 	 * @param turn the color of the player whose turn it is
 	 * @param currentRound the number of the current round
 	 * @param pieces a map containing the pieces yet to be placed
+	 * @param gameStatus
+	 * @param firstPlayer
 	 */
 	public GameState(HantoBoard board,
 			HantoPlayerColor turn, int currentRound,
 			Map<HantoPlayerColor, List<HantoPieceType>> pieces,
-			MoveResult gameState, HantoPlayerColor wentFirst)
+			MoveResult gameStatus, HantoPlayerColor firstPlayer)
 	{
 		this.board = board;
 		this.turn = turn;
 		this.currentRound = currentRound;
 		this.pieces = pieces;
-		this.gameStatus = gameState;
-		this.firstPlayer = wentFirst;
+		this.gameStatus = gameStatus;
+		this.firstPlayer = firstPlayer;
 	}
 	
+	/**
+	 * Update the game state to indicate that the turn has changed
+	 * 
+	 * @return the status of the game (e.g. RED_WIN, BLUE_WIN, DRAW)
+	 */
 	public MoveResult nextTurn()
 	{
 		turn = (turn == HantoPlayerColor.BLUE) ? HantoPlayerColor.RED : HantoPlayerColor.BLUE;

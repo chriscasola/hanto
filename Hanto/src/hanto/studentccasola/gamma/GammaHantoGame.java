@@ -40,7 +40,9 @@ public class GammaHantoGame extends AbstractHantoGame
 	 */
 	protected void initializeFields()
 	{
-		gameState = new GameState(new BasicHantoBoard(), HantoPlayerColor.BLUE, 1, new HashMap<HantoPlayerColor,List<HantoPieceType>>(), MoveResult.OK, HantoPlayerColor.BLUE);
+		gameState = new GameState(new BasicHantoBoard(), HantoPlayerColor.BLUE, 
+				1 /* round 1 */, new HashMap<HantoPlayerColor,List<HantoPieceType>>(), 
+				MoveResult.OK, HantoPlayerColor.BLUE);
 		ruleset = new GammaHantoRuleset(gameState);
 		distributePieces();
 	}

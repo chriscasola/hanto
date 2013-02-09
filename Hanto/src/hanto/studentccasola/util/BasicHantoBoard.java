@@ -61,7 +61,8 @@ public class BasicHantoBoard implements HantoBoard
 	}
 
 	/* 
-	 * @see hanto.studentccasola.common.HantoBoard#movePiece(hanto.util.HantoCoordinate, hanto.util.HantoCoordinate)
+	 * @see hanto.studentccasola.common.HantoBoard#movePiece(
+	 * hanto.util.HantoCoordinate, hanto.util.HantoCoordinate)
 	 */
 	public void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException
 	{
