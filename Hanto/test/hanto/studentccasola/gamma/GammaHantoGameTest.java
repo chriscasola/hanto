@@ -44,8 +44,8 @@ public class GammaHantoGameTest
 		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
 		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,1));
 		game.makeMove(HantoPieceType.BUTTERFLY, new TestHantoCoordinate(0,0), new TestHantoCoordinate(1,0));
-		assertNull(game.getBoard().getCellAtCoordinate(new TestHantoCoordinate(0,0)));
-		assertEquals(new HexCell(new TestHantoCoordinate(1,0), HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY), game.getBoard().getCellAtCoordinate(new TestHantoCoordinate(1,0)));
+		assertNull(game.getState().getBoard().getCellAtCoordinate(new TestHantoCoordinate(0,0)));
+		assertEquals(new HexCell(new TestHantoCoordinate(1,0), HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY), game.getState().getBoard().getCellAtCoordinate(new TestHantoCoordinate(1,0)));
 	}
 	
 	@Test(expected=HantoException.class)
@@ -145,23 +145,23 @@ public class GammaHantoGameTest
 		assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new TestHantoCoordinate(-1,0), new TestHantoCoordinate(-1,1)));
 		assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new TestHantoCoordinate(1,0), new TestHantoCoordinate(1,1)));
 		assertEquals(MoveResult.OK, game.makeMove(HantoPieceType.BUTTERFLY, new TestHantoCoordinate(-1,1), new TestHantoCoordinate(-1,0)));
-		assertEquals(10, game.getRound());
+		assertEquals(10, game.getState().getCurrentRound());
 		assertEquals(MoveResult.DRAW, game.makeMove(HantoPieceType.BUTTERFLY, new TestHantoCoordinate(1,1), new TestHantoCoordinate(1,0)));
-		assertEquals(11, game.getRound());
+		assertEquals(11, game.getState().getCurrentRound());
 	}
 
 	@Test
 	public void keepTrackOfRound() throws HantoException
 	{
-		assertEquals(1, game.getRound());
+		assertEquals(1, game.getState().getCurrentRound());
 		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
-		assertEquals(1, game.getRound());
+		assertEquals(1, game.getState().getCurrentRound());
 		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,1));
-		assertEquals(2, game.getRound());
+		assertEquals(2, game.getState().getCurrentRound());
 		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,2));
-		assertEquals(2, game.getRound());
+		assertEquals(2, game.getState().getCurrentRound());
 		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,3));
-		assertEquals(3, game.getRound());
+		assertEquals(3, game.getState().getCurrentRound());
 	}
 	
 	@Test
@@ -275,11 +275,11 @@ public class GammaHantoGameTest
 	@Test
 	public void turnsAlternateBetweenPlayers() throws HantoException
 	{
-		assertEquals(HantoPlayerColor.BLUE, game.getTurn());
+		assertEquals(HantoPlayerColor.BLUE, game.getState().getTurn());
 		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,0)); // blue
-		assertEquals(HantoPlayerColor.RED, game.getTurn());
+		assertEquals(HantoPlayerColor.RED, game.getState().getTurn());
 		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,0)); // blue
-		assertEquals(HantoPlayerColor.BLUE, game.getTurn());
+		assertEquals(HantoPlayerColor.BLUE, game.getState().getTurn());
 	}
 
 	@Test(expected=HantoException.class)
@@ -322,15 +322,15 @@ public class GammaHantoGameTest
 	public void ableToInitializeToRed() throws HantoException
 	{
 		game.initialize(HantoPlayerColor.RED);
-		assertEquals(HantoPlayerColor.RED, game.getTurn());
+		assertEquals(HantoPlayerColor.RED, game.getState().getTurn());
 	}
 
 	@Test
 	public void byDefaultInitializeToBlueFirst() throws HantoException
 	{
-		assertEquals(HantoPlayerColor.BLUE, game.getTurn());
+		assertEquals(HantoPlayerColor.BLUE, game.getState().getTurn());
 		game.initialize(null);
-		assertEquals(HantoPlayerColor.BLUE, game.getTurn());
+		assertEquals(HantoPlayerColor.BLUE, game.getState().getTurn());
 	}
 
 }

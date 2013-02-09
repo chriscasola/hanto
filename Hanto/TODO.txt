@@ -1,10 +1,16 @@
+
+REFACTORING PRE-DELTA HANTO
+X Ensure HexCoordinate is used throughout the code (don't trust HantoCoordinates that are passed in as they may not override equals)
+X Refactor rules into rulesets
+
+
 GAMMA HANTO
 X Allow butterfly to walk one hex (if it is unoccupied)
 X Do not allow sparrows to walk
 - End after ten turns if the game has not already ended
 
 NICE TO HAVE
-- Refactor rules into rulesets
+X Refactor rules into rulesets
 
 
 

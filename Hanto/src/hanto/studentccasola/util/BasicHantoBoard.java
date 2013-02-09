@@ -57,7 +57,7 @@ public class BasicHantoBoard implements HantoBoard
 		{
 			throw new HantoException("This cell already contains a piece.");
 		}
-		else if (isAdjacent(hexCell) || getNumOccupiedCells() < 1)
+		else if (isAdjacent(hexCell.getCoordinate()) || getNumOccupiedCells() < 1)
 		{
 			coordinateMap.put(hexCell.getCoordinate(), hexCell);
 		}
@@ -160,10 +160,10 @@ public class BasicHantoBoard implements HantoBoard
 	 * @see hanto.studentccasola.common.HantoBoard#isAdjacent(hanto.studentccasola.util.HexCell)
 	 */
 	@Override
-	public boolean isAdjacent(HexCell cell)
+	public boolean isAdjacent(HexCoordinate coord)
 	{
 		boolean isAdjacent = false;
-		if (getNeighbors(cell.getCoordinate()).size() > 0)
+		if (getNeighbors(coord).size() > 0)
 		{
 			isAdjacent = true;
 		}

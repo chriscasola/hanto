@@ -162,8 +162,8 @@ public class BasicHantoBoardTest
 		board.placePiece(hexCell1);
 		board.placePiece(hexCell2);
 
-		assertTrue(board.isAdjacent(new HexCell(new HexCoordinate(0,1), HantoPlayerColor.BLUE, HantoPieceType.SPARROW)));
-		assertFalse(board.isAdjacent(new HexCell(new HexCoordinate(1,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW)));
+		assertTrue(board.isAdjacent(new HexCoordinate(0,1)));
+		assertFalse(board.isAdjacent(new HexCoordinate(1,0)));
 	}
 
 	/**
