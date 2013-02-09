@@ -7,33 +7,25 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.rules;
+package hanto.studentccasola.gamma;
 
-import hanto.common.HantoException;
+import hanto.studentccasola.common.HantoRuleset;
 import hanto.studentccasola.util.GameState;
-import hanto.studentccasola.util.HantoRule;
 
 /**
- * The first move must be at the coordinate (0,0)
- *
+ * The ruleset for the Gamma version of Hanto
+ * 
  * @author Chris Casola
- * @version Jan 24, 2013
+ * @version Feb 9, 2013
  */
-public class FirstMoveAtOrigin implements HantoRule
+public class GammaHantoRuleset extends HantoRuleset
 {
-	
-	/* 
-	 * @see hanto.studentccasola.util.HantoRule#validate(hanto.studentccasola.util.GameState)
+	/**
+	 * Construct the ruleset
+	 * @param gameState the game state
 	 */
-	@Override
-	public void validate(GameState state)
-			throws HantoException
+	public GammaHantoRuleset(GameState gameState)
 	{
-		if (state.getBoard().getNumOccupiedCells() < 1 && 
-				(state.getTo().getX() != 0 || state.getTo().getY() != 0))
-		{
-			throw new HantoException("First move must be at (0,0)");
-		}
+		this.gameState = gameState;
 	}
-
 }

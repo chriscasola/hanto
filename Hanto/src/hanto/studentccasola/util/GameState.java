@@ -10,9 +10,9 @@
 package hanto.studentccasola.util;
 
 import hanto.studentccasola.common.HantoBoard;
-import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
+import hanto.util.MoveResult;
 
 import java.util.List;
 import java.util.Map;
@@ -26,35 +26,65 @@ import java.util.Map;
  */
 public class GameState
 {
+	public static final int MAX_NUM_ROUNDS = 10;
 	private final HantoBoard board;
-	private final HantoCoordinate from;
-	private final HantoCoordinate to;
-	private final HantoPieceType pieceType;
-	private final HantoPlayerColor turn;
-	private final int currentRound;
+	private HantoPlayerColor turn;
+	private int currentRound;
 	private final Map<HantoPlayerColor,List<HantoPieceType>> pieces;
+	private MoveResult gameStatus;
+	private HantoPlayerColor firstPlayer;
 	
 	/**
+	 * Construct the game state
+	 * 
 	 * @param board the board
-	 * @param from the coordinate where the piece is being moved from
-	 * @param to the coordinate where the piece is being moved to
-	 * @param pieceType the type of piece
 	 * @param turn the color of the player whose turn it is
 	 * @param currentRound the number of the current round
 	 * @param pieces a map containing the pieces yet to be placed
+	 * @param gameStatus
+	 * @param firstPlayer
 	 */
-	public GameState(HantoBoard board, HantoCoordinate from,
-			HantoCoordinate to, HantoPieceType pieceType,
+	public GameState(HantoBoard board,
 			HantoPlayerColor turn, int currentRound,
-			Map<HantoPlayerColor, List<HantoPieceType>> pieces)
+			Map<HantoPlayerColor, List<HantoPieceType>> pieces,
+			MoveResult gameStatus, HantoPlayerColor firstPlayer)
 	{
 		this.board = board;
-		this.from = from;
-		this.to = to;
-		this.pieceType = pieceType;
 		this.turn = turn;
 		this.currentRound = currentRound;
 		this.pieces = pieces;
+		this.gameStatus = gameStatus;
+		this.firstPlayer = firstPlayer;
+	}
+	
+	/**
+	 * Update the game state to indicate that the turn has changed
+	 * 
+	 * @return the status of the game (e.g. RED_WIN, BLUE_WIN, DRAW)
+	 */
+	public MoveResult nextTurn()
+	{
+		turn = (turn == HantoPlayerColor.BLUE) ? HantoPlayerColor.RED : HantoPlayerColor.BLUE;
+		currentRound += (turn == firstPlayer) ? 1 : 0;
+		gameStatus = board.getBoardState();
+		
+		// End the game if round MAX_NUM_ROUNDS is complete
+		if (currentRound > MAX_NUM_ROUNDS)
+		{
+			gameStatus = (gameStatus != MoveResult.OK) ? gameStatus : MoveResult.DRAW; 
+		}
+		
+		return gameStatus;
+	}
+	
+	public void setTurn(HantoPlayerColor turn)
+	{
+		this.turn = turn;
+	}
+	
+	public void setFirstPlayer(HantoPlayerColor firstPlayer)
+	{
+		this.firstPlayer = firstPlayer;
 	}
 
 	/**
@@ -63,30 +93,6 @@ public class GameState
 	public HantoBoard getBoard()
 	{
 		return board;
-	}
-
-	/**
-	 * @return the from
-	 */
-	public HantoCoordinate getFrom()
-	{
-		return from;
-	}
-
-	/**
-	 * @return the to
-	 */
-	public HantoCoordinate getTo()
-	{
-		return to;
-	}
-
-	/**
-	 * @return the pieceType
-	 */
-	public HantoPieceType getPieceType()
-	{
-		return pieceType;
 	}
 
 	/**
@@ -113,5 +119,7 @@ public class GameState
 		return pieces;
 	}
 	
-	
+	public MoveResult getStatus() {
+		return gameStatus;
+	}
 }

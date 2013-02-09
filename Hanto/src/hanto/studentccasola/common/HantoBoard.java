@@ -13,6 +13,7 @@ import java.util.Collection;
 
 import hanto.common.HantoException;
 import hanto.studentccasola.util.HexCell;
+import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoCoordinate;
 import hanto.util.MoveResult;
 
@@ -65,7 +66,7 @@ public interface HantoBoard
 	 * @param cell the cell to check for adjacency
 	 * @return true if the cell would be adjacent to other cells, false otherwise
 	 */
-	boolean isAdjacent(HexCell cell);
+	boolean isAdjacent(HexCoordinate cell);
 	
 	
 	/**
