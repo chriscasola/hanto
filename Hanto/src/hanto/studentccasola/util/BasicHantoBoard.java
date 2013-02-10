@@ -177,6 +177,24 @@ public class BasicHantoBoard implements HantoBoard
 		}
 		return retVal;
 	}
+	
+	/*
+	 * @see hanto.studentccasola.common.HantoBoard#checkContiguity()
+	 */
+	@Override
+	public void checkContiguity() throws HantoException
+	{
+		final Set<HexCoordinate> visitedCoords = new HashSet<HexCoordinate>();
+		final Iterator<HexCoordinate> coordIterator = coordinateMap.keySet().iterator();
+		if (coordIterator.hasNext())
+		{
+			visitCoordinate(visitedCoords, coordIterator.next());
+			if (!visitedCoords.containsAll(coordinateMap.keySet()))
+			{
+				throw new HantoException("The board is not contiguous.");
+			}
+		}
+	}
 
 	/**
 	 * Returns the set of cells currently in the board that are neighbors
@@ -205,25 +223,6 @@ public class BasicHantoBoard implements HantoBoard
 	protected Map<HexCoordinate, HexCell> getCoordinateMap()
 	{
 		return coordinateMap;
-	}
-
-	/**
-	 * Ensure that the board is contiguous. That is all cells make up one
-	 * contiguous group.
-	 * @throws HantoException if the board is not contiguous
-	 */
-	private void checkContiguity() throws HantoException
-	{
-		final Set<HexCoordinate> visitedCoords = new HashSet<HexCoordinate>();
-		final Iterator<HexCoordinate> coordIterator = coordinateMap.keySet().iterator();
-		if (coordIterator.hasNext())
-		{
-			visitCoordinate(visitedCoords, coordIterator.next());
-			if (!visitedCoords.containsAll(coordinateMap.keySet()))
-			{
-				throw new HantoException("The board is not contiguous.");
-			}
-		}
 	}
 
 	private void visitCoordinate(Set<HexCoordinate> visitedCoords, HexCoordinate currentCoord)

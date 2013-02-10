@@ -18,8 +18,19 @@ import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 
+/**
+ * Ruleset for the Delta version of Hanto
+ *  
+ * @author Chris Casola
+ * @version Feb 10, 2013 
+ */
 public class DeltaHantoRuleset extends HantoRuleset
 {
+	/**
+	 * Construct the ruleset
+	 * 
+	 * @param gameState the state of the game
+	 */
 	public DeltaHantoRuleset(GameState gameState)
 	{
 		super(gameState);
@@ -56,12 +67,21 @@ public class DeltaHantoRuleset extends HantoRuleset
 		pieceMustBePlacedNextToLikeColorOnly(hexFrom, hexTo);
 	}
 	
-	public void pieceMustBePlacedNextToLikeColorOnly(HexCoordinate from, HexCoordinate to) throws HantoException
+	/**
+	 * Make sure pieces are placed next to a like color and not
+	 * next to an opposite color
+	 * 
+	 * @param from the source location of the piece
+	 * @param to the destination location of the piece
+	 * @throws HantoException if the rule is violated
+	 */
+	protected void pieceMustBePlacedNextToLikeColorOnly(HexCoordinate from, HexCoordinate to) 
+			throws HantoException
 	{
 		// rule does not apply for first round and only when placing (not moving)
 		if (gameState.getCurrentRound() > 1 && from == null)
 		{
-			HantoPlayerColor color = gameState.getTurn();
+			final HantoPlayerColor color = gameState.getTurn();
 			int likeNeighbors = 0;
 			int unlikeNeighbors = 0;
 			

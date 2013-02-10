@@ -39,6 +39,7 @@ public class GammaHantoRuleset extends HantoRuleset
 	public void postMoveChecks(HantoPieceType pieceType, HantoCoordinate from,
 			HantoCoordinate to) throws HantoException
 	{
+		super.postMoveChecks(pieceType, from, to);
 		onlyAllowTenRounds();
 	}
 
@@ -51,7 +52,6 @@ public class GammaHantoRuleset extends HantoRuleset
 		if (gameState.getCurrentRound() > 10 && gameState.getStatus() == MoveResult.OK)
 		{
 			gameState.setStatus(MoveResult.DRAW);
-
 		}
 	}
 }

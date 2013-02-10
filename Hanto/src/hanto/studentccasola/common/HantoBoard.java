@@ -89,4 +89,11 @@ public interface HantoBoard
 	 */
 	int getNumOccupiedCells();
 	
+	/**
+	 * Ensure that the board is contiguous. That is all cells make up one
+	 * contiguous group.
+	 * @throws HantoException if the board is not contiguous
+	 */
+	void checkContiguity() throws HantoException;
+	
 }

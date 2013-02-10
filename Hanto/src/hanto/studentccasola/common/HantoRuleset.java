@@ -43,11 +43,11 @@ public abstract class HantoRuleset
 	 * 
 	 * @param gameState the game state
 	 */
-	public HantoRuleset(GameState gameState)
+	protected HantoRuleset(GameState gameState)
 	{
 		this.gameState = gameState;
-		this.walkingPieces = new HashSet<HantoPieceType>();
-		this.flyingPieces = new HashSet<HantoPieceType>();
+		walkingPieces = new HashSet<HantoPieceType>();
+		flyingPieces = new HashSet<HantoPieceType>();
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public abstract class HantoRuleset
 	public void postMoveChecks(HantoPieceType pieceType, HantoCoordinate from,
 			HantoCoordinate to) throws HantoException
 	{
-		// there are none for the default ruleset
+		gameState.getBoard().checkContiguity();
 	}
 	
 	/**
@@ -151,7 +151,8 @@ public abstract class HantoRuleset
 	 */
 	protected void onlyMoveAfterButterflyIsPlaced(HexCoordinate from) throws HantoException
 	{
-		if (from != null && gameState.getPieces().get(gameState.getTurn()).contains(HantoPieceType.BUTTERFLY))
+		if (from != null && gameState.getPieces().get(
+				gameState.getTurn()).contains(HantoPieceType.BUTTERFLY))
 		{
 			throw new HantoException("Cannot move until butterfly is placed!");
 		}
@@ -171,7 +172,7 @@ public abstract class HantoRuleset
 	{
 		if (from != null)
 		{
-			if (walkingPieces.contains(pieceType) && !ableToSlide(from, to))
+			if (walkingPieces.contains(pieceType) && !canSlide(from, to))
 			{
 				throw new HantoException("This is not a valid walk!");
 			}
@@ -289,7 +290,7 @@ public abstract class HantoRuleset
 	 * @param to the destination location
 	 * @return true if the piece is able to slide, false otherwise
 	 */
-	private boolean ableToSlide(HexCoordinate from, HexCoordinate to)
+	private boolean canSlide(HexCoordinate from, HexCoordinate to)
 	{
 		boolean ableToSlide = false;
 		
@@ -298,7 +299,7 @@ public abstract class HantoRuleset
 			ableToSlide = false;
 		}
 		else {
-			Set<HexCoordinate> commonCells = to.getAdjacentCoordinates();
+			final Set<HexCoordinate> commonCells = to.getAdjacentCoordinates();
 			commonCells.retainAll(from.getAdjacentCoordinates());
 			for (HexCoordinate coord : commonCells)
 			{

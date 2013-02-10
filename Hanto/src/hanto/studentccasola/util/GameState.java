@@ -71,22 +71,41 @@ public class GameState
 		return gameStatus;
 	}
 	
+	/**
+	 * Causes the player whose turn it is to resign
+	 * 
+	 * @return the state of the game (the other player wins)
+	 */
 	public MoveResult resign()
 	{
 		gameStatus = (turn == HantoPlayerColor.BLUE) ? MoveResult.RED_WINS : MoveResult.BLUE_WINS;
 		return gameStatus;
 	}
 	
+	/**
+	 * Set the current turn
+	 * 
+	 * @param turn the current turn
+	 */
 	public void setTurn(HantoPlayerColor turn)
 	{
 		this.turn = turn;
 	}
 	
+	/**
+	 * Set the first player of the game
+	 * @param firstPlayer the color of the first player
+	 */
 	public void setFirstPlayer(HantoPlayerColor firstPlayer)
 	{
 		this.firstPlayer = firstPlayer;
 	}
 	
+	/**
+	 * Set the status of the game
+	 * 
+	 * @param gameStatus the new status
+	 */
 	public void setStatus(MoveResult gameStatus)
 	{
 		this.gameStatus = gameStatus;
@@ -124,6 +143,9 @@ public class GameState
 		return pieces;
 	}
 	
+	/**
+	 * @return the status of the game
+	 */
 	public MoveResult getStatus() {
 		return gameStatus;
 	}
