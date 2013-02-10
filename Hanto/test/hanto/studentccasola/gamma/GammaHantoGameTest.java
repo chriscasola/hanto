@@ -11,10 +11,13 @@ package hanto.studentccasola.gamma;
 
 import static org.junit.Assert.*;
 import hanto.common.HantoException;
+import hanto.studentccasola.HantoGameFactory;
+import hanto.studentccasola.common.AbstractHantoGame;
 import hanto.studentccasola.common.HantoGameTest;
 import hanto.studentccasola.gamma.GammaHantoGame;
 import hanto.studentccasola.util.HexCell;
 import hanto.testutil.TestHantoCoordinate;
+import hanto.util.HantoGameID;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -34,13 +37,13 @@ public class GammaHantoGameTest extends HantoGameTest
 	@BeforeClass
 	public static void setupBeforeClass()
 	{
-		game = new GammaHantoGame();
+		game = (AbstractHantoGame) HantoGameFactory.getInstance().makeHantoGame(HantoGameID.GAMMA_HANTO);
 	}
 	
 	@Before
 	public void setUp()
 	{
-		game = new GammaHantoGame();
+		game = (AbstractHantoGame) HantoGameFactory.getInstance().makeHantoGame(HantoGameID.GAMMA_HANTO);
 	}
 	
 	@Test
