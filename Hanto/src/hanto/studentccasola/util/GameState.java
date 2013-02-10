@@ -68,12 +68,12 @@ public class GameState
 		currentRound += (turn == firstPlayer) ? 1 : 0;
 		gameStatus = board.getBoardState();
 		
-		// End the game if round MAX_NUM_ROUNDS is complete
-		if (currentRound > MAX_NUM_ROUNDS)
-		{
-			gameStatus = (gameStatus != MoveResult.OK) ? gameStatus : MoveResult.DRAW; 
-		}
-		
+		return gameStatus;
+	}
+	
+	public MoveResult resign()
+	{
+		gameStatus = (turn == HantoPlayerColor.BLUE) ? MoveResult.RED_WINS : MoveResult.BLUE_WINS;
 		return gameStatus;
 	}
 	
@@ -85,6 +85,11 @@ public class GameState
 	public void setFirstPlayer(HantoPlayerColor firstPlayer)
 	{
 		this.firstPlayer = firstPlayer;
+	}
+	
+	public void setStatus(MoveResult gameStatus)
+	{
+		this.gameStatus = gameStatus;
 	}
 
 	/**

@@ -11,6 +11,7 @@ package hanto.studentccasola;
 
 import hanto.common.HantoGame;
 import hanto.studentccasola.alpha.AlphaHantoGame;
+import hanto.studentccasola.delta.DeltaHantoGame;
 import hanto.studentccasola.gamma.GammaHantoGame;
 import hanto.util.HantoGameID;
 
@@ -57,6 +58,9 @@ public class HantoGameFactory
 			break;
 		case GAMMA_HANTO:
 			game = new GammaHantoGame();
+			break;
+		case DELTA_HANTO:
+			game = new DeltaHantoGame();
 			break;
 		default:
 			break;

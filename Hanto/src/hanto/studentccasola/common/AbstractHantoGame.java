@@ -99,9 +99,14 @@ public abstract class AbstractHantoGame implements HantoGame
 			// Remove the piece from the player's available list
 			usePiece(pieceType);
 		}
-
+		
 		// Move the game state to the next turn
-		return gameState.nextTurn();
+		gameState.nextTurn();
+		
+		// Verify post-move rules are not violated
+		ruleset.postMoveChecks(pieceType, from, to);
+
+		return gameState.getStatus();
 	}
 	
 	/**

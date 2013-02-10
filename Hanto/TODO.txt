@@ -1,3 +1,12 @@
+DELTA HANTO
+X Allow players to resign
+X Test for game ending in draw
+X No round limit in delta
+X Ensure walking works correctly
+X Crab can walk one hex in a turn
+X Sparrow can fly
+X No piece can move until butterfly is placed
+X Check if pieces need to be adjacent to pieces of the same color
 
 REFACTORING PRE-DELTA HANTO
 X Refactor tests into common HantoGameTests
