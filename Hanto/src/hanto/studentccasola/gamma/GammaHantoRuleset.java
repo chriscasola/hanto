@@ -9,8 +9,12 @@
  *******************************************************************************/
 package hanto.studentccasola.gamma;
 
+import hanto.common.HantoException;
+import hanto.studentccasola.common.GameState;
 import hanto.studentccasola.common.HantoRuleset;
-import hanto.studentccasola.util.GameState;
+import hanto.util.HantoCoordinate;
+import hanto.util.HantoPieceType;
+import hanto.util.MoveResult;
 
 /**
  * The ruleset for the Gamma version of Hanto
@@ -20,12 +24,34 @@ import hanto.studentccasola.util.GameState;
  */
 public class GammaHantoRuleset extends HantoRuleset
 {
-	/**
-	 * Construct the ruleset
-	 * @param gameState the game state
-	 */
 	public GammaHantoRuleset(GameState gameState)
 	{
-		this.gameState = gameState;
+		super(gameState);
+		getWalkingPieces().add(HantoPieceType.BUTTERFLY);
+	}
+	
+	/*
+	 * @see hanto.studentccasola.common.HantoRuleset#postMoveChecks(
+	 * hanto.util.HantoPieceType, hanto.util.HantoCoordinate, 
+	 * hanto.util.HantoCoordinate)
+	 */
+	@Override
+	public void postMoveChecks(HantoPieceType pieceType, HantoCoordinate from,
+			HantoCoordinate to) throws HantoException
+	{
+		super.postMoveChecks(pieceType, from, to);
+		onlyAllowTenRounds();
+	}
+
+	/**
+	 * The game should end with a draw if there is no winner after
+	 * ten rounds of play
+	 */
+	protected void onlyAllowTenRounds()
+	{
+		if (gameState.getCurrentRound() > 10 && gameState.getStatus() == MoveResult.OK)
+		{
+			gameState.setStatus(MoveResult.DRAW);
+		}
 	}
 }

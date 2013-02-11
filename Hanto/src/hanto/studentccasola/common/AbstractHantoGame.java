@@ -13,8 +13,6 @@ import java.util.List;
 
 import hanto.common.HantoException;
 import hanto.common.HantoGame;
-import hanto.studentccasola.util.GameState;
-import hanto.studentccasola.util.HexCell;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
@@ -99,9 +97,14 @@ public abstract class AbstractHantoGame implements HantoGame
 			// Remove the piece from the player's available list
 			usePiece(pieceType);
 		}
-
+		
 		// Move the game state to the next turn
-		return gameState.nextTurn();
+		gameState.nextTurn();
+		
+		// Verify post-move rules are not violated
+		ruleset.postMoveChecks(pieceType, from, to);
+
+		return gameState.getStatus();
 	}
 	
 	/**

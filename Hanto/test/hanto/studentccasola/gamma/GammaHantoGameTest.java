@@ -11,10 +11,12 @@ package hanto.studentccasola.gamma;
 
 import static org.junit.Assert.*;
 import hanto.common.HantoException;
+import hanto.studentccasola.HantoGameFactory;
+import hanto.studentccasola.common.AbstractHantoGame;
 import hanto.studentccasola.common.HantoGameTest;
-import hanto.studentccasola.gamma.GammaHantoGame;
-import hanto.studentccasola.util.HexCell;
+import hanto.studentccasola.common.HexCell;
 import hanto.testutil.TestHantoCoordinate;
+import hanto.util.HantoGameID;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -34,49 +36,13 @@ public class GammaHantoGameTest extends HantoGameTest
 	@BeforeClass
 	public static void setupBeforeClass()
 	{
-		game = new GammaHantoGame();
+		game = (AbstractHantoGame) HantoGameFactory.getInstance().makeHantoGame(HantoGameID.GAMMA_HANTO);
 	}
 	
 	@Before
 	public void setUp()
 	{
-		game = new GammaHantoGame();
-	}
-	
-	@Test
-	public void allowButterflyToMoveOneCell() throws HantoException
-	{
-		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
-		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,1));
-		game.makeMove(HantoPieceType.BUTTERFLY, new TestHantoCoordinate(0,0), new TestHantoCoordinate(1,0));
-		assertNull(game.getState().getBoard().getCellAtCoordinate(new TestHantoCoordinate(0,0)));
-		assertEquals(new HexCell(new TestHantoCoordinate(1,0), HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY), game.getState().getBoard().getCellAtCoordinate(new TestHantoCoordinate(1,0)));
-	}
-	
-	@Test(expected=HantoException.class)
-	public void butterflyCannotMoveMoreThanOneCell() throws HantoException
-	{
-		try
-		{
-			game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
-			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,1));
-			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,2));
-			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,3));
-		}
-		catch (HantoException e)
-		{
-			fail("The above moves should succeed.");
-		}
-		game.makeMove(HantoPieceType.BUTTERFLY, new TestHantoCoordinate(0,0), new TestHantoCoordinate(1,1));
-	}
-	
-	@Test
-	public void butterflyCanWalkOneCellTowardBottomRight() throws HantoException {
-		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
-		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,0));
-		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(2,0));
-		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(3,0));
-		game.makeMove(HantoPieceType.BUTTERFLY, new TestHantoCoordinate(0,0), new TestHantoCoordinate(1,-1));
+		game = (AbstractHantoGame) HantoGameFactory.getInstance().makeHantoGame(HantoGameID.GAMMA_HANTO);
 	}
 	
 	@Test(expected=HantoException.class)
@@ -118,53 +84,6 @@ public class GammaHantoGameTest extends HantoGameTest
 		assertEquals(11, game.getState().getCurrentRound());
 	}
 
-	@Test
-	public void bothPlayersLegallyPlaceButterfliesInFourthRound() throws HantoException
-	{
-		for (int i = 0; i < 6; i++)
-		{
-			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,i));
-		}
-		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,6)); // Legally place butterfly in fourth round
-		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,7)); // Legally place butterfly in fourth round
-	}
-
-	@Test(expected=HantoException.class)
-	public void onePlayerLegallyPlacesButterflyOnFourthButSecondPlayerDoesNot() throws HantoException
-	{
-		try
-		{
-			for (int i = 0; i < 6; i++)
-			{
-				game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,i));
-			}
-	
-			game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,6)); // Legally place butterfly in fourth round
-		}
-		catch (HantoException e)
-		{
-			fail("Prior moves should have been successful.");
-		}
-		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,7)); // Illegally place fourth sparrow before butterfly
-	}
-
-	@Test(expected=HantoException.class)
-	public void butterflyMustBeOnBoardByFourthTurn() throws HantoException
-	{
-		try
-		{
-			for (int i = 0; i < 6; i++)
-			{
-				game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,i));
-			}
-		}
-		catch (HantoException e)
-		{
-			fail("Prior moves should have succeeded.");
-		}
-		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,6)); // Illegally place fourth sparrow before butterfly
-	}
-
 	@Test(expected=HantoException.class)
 	public void eachPlayerHasOnlyFiveSparrows() throws HantoException
 	{
@@ -183,19 +102,5 @@ public class GammaHantoGameTest extends HantoGameTest
 		}
 
 		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,12)); // blue (using a non-existant 6th sparrow)
-	}
-
-	@Test(expected=HantoException.class)
-	public void eachPlayerHasOnlyOneButterfly() throws HantoException
-	{
-		try {
-			game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
-			game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,1));
-		}
-		catch (HantoException e)
-		{
-			fail("Each person gets one butterfly, neither player has used more than one.");
-		}
-		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,2));
 	}
 }

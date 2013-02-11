@@ -7,9 +7,8 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.util;
+package hanto.studentccasola.common;
 
-import hanto.studentccasola.common.HantoBoard;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -68,23 +67,47 @@ public class GameState
 		currentRound += (turn == firstPlayer) ? 1 : 0;
 		gameStatus = board.getBoardState();
 		
-		// End the game if round MAX_NUM_ROUNDS is complete
-		if (currentRound > MAX_NUM_ROUNDS)
-		{
-			gameStatus = (gameStatus != MoveResult.OK) ? gameStatus : MoveResult.DRAW; 
-		}
-		
 		return gameStatus;
 	}
 	
+	/**
+	 * Causes the player whose turn it is to resign
+	 * 
+	 * @return the state of the game (the other player wins)
+	 */
+	public MoveResult resign()
+	{
+		gameStatus = (turn == HantoPlayerColor.BLUE) ? MoveResult.RED_WINS : MoveResult.BLUE_WINS;
+		return gameStatus;
+	}
+	
+	/**
+	 * Set the current turn
+	 * 
+	 * @param turn the current turn
+	 */
 	public void setTurn(HantoPlayerColor turn)
 	{
 		this.turn = turn;
 	}
 	
+	/**
+	 * Set the first player of the game
+	 * @param firstPlayer the color of the first player
+	 */
 	public void setFirstPlayer(HantoPlayerColor firstPlayer)
 	{
 		this.firstPlayer = firstPlayer;
+	}
+	
+	/**
+	 * Set the status of the game
+	 * 
+	 * @param gameStatus the new status
+	 */
+	public void setStatus(MoveResult gameStatus)
+	{
+		this.gameStatus = gameStatus;
 	}
 
 	/**
@@ -119,6 +142,9 @@ public class GameState
 		return pieces;
 	}
 	
+	/**
+	 * @return the status of the game
+	 */
 	public MoveResult getStatus() {
 		return gameStatus;
 	}

@@ -14,7 +14,7 @@ import java.util.List;
 
 import hanto.common.HantoException;
 import hanto.common.HantoGame;
-import hanto.studentccasola.util.HexCell;
+import hanto.studentccasola.common.HexCell;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;

@@ -11,7 +11,7 @@ package hanto.studentccasola.alpha;
 
 import static org.junit.Assert.*;
 import hanto.common.HantoException;
-import hanto.studentccasola.util.HexCoordinate;
+import hanto.studentccasola.common.HexCoordinate;
 import hanto.util.HantoPieceType;
 
 import org.junit.Before;

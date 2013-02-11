@@ -9,10 +9,10 @@
  *******************************************************************************/
 package hanto.studentccasola.common;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import hanto.common.HantoException;
-import hanto.studentccasola.util.GameState;
-import hanto.studentccasola.util.HexCell;
-import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.MoveResult;
@@ -29,6 +29,24 @@ public abstract class HantoRuleset
 	/** The state of the game */
 	protected GameState gameState;
 	
+	/** A list of pieces that can walk */
+	protected Set<HantoPieceType> walkingPieces;
+	
+	/** A list of pieces that can fly */
+	protected Set<HantoPieceType> flyingPieces;
+	
+	/**
+	 * Construct the ruleset
+	 * 
+	 * @param gameState the game state
+	 */
+	protected HantoRuleset(GameState gameState)
+	{
+		this.gameState = gameState;
+		walkingPieces = new HashSet<HantoPieceType>();
+		flyingPieces = new HashSet<HantoPieceType>();
+	}
+	
 	/**
 	 * Checks that all rules specified in this class are met
 	 * 
@@ -41,21 +59,56 @@ public abstract class HantoRuleset
 			HantoCoordinate to) throws HantoException
 	{
 		HexCoordinate hexFrom = null;
+		HexCoordinate hexTo = null;
 		if (from != null)
 		{
 			hexFrom = new HexCoordinate(from);
 		}
-		final HexCoordinate hexTo = new HexCoordinate(to);
+		if (to != null)
+		{
+			hexTo = new HexCoordinate(to);
+		}
 		
 		checkIfGameIsOver();
-		butterflyCanWalkOneHex(pieceType, hexFrom, hexTo);
+		onlyMoveAfterButterflyIsPlaced(hexFrom);
+		onlyCertainPiecesCanMove(pieceType, hexFrom);
+		pieceCanWalkOneHex(pieceType, hexFrom, hexTo);
 		cannotMoveFromUnoccupiedHex(hexFrom, hexTo);
 		cannotMoveOpponentsPiece(pieceType, hexFrom);
 		firstMoveAtOrigin(hexTo);
 		pieceToMoveMatchesPieceAtFrom(pieceType, hexFrom);
-		onlyButterfliesMayMove(pieceType, hexFrom);
 		piecesMustBeAdjacent(hexTo);
 		playButterflyByRoundFour(pieceType);
+	}
+	
+	/**
+	 * Performs post-move checks
+	 * 
+	 * @param pieceType the piece being placed/moved
+	 * @param from the source location of the piece
+	 * @param to the destination location of the piece
+	 * @throws HantoException if a rule is violated
+	 */
+	public void postMoveChecks(HantoPieceType pieceType, HantoCoordinate from,
+			HantoCoordinate to) throws HantoException
+	{
+		gameState.getBoard().checkContiguity();
+	}
+	
+	/**
+	 * @return the set of piece types that are able to walk
+	 */
+	public Set<HantoPieceType> getWalkingPieces()
+	{
+		return walkingPieces;
+	}
+	
+	/**
+	 * @return the set of piece types that are able to fly
+	 */
+	public Set<HantoPieceType> getFlyingPieces()
+	{
+		return flyingPieces;
 	}
 	
 	/**
@@ -71,20 +124,55 @@ public abstract class HantoRuleset
 	}
 	
 	/**
-	 * Verify that the butterfly is not attempting to walk more than one hex
+	 * Some pieces are not able to move
+	 * 
+	 * @param pieceType the piece being moved during this turn
+	 * @param from the source location of the piece
+	 * @throws HantoException
+	 */
+	protected void onlyCertainPiecesCanMove(HantoPieceType pieceType, 
+			HexCoordinate from) throws HantoException
+	{
+		if (from != null && !walkingPieces.contains(pieceType) &&
+				!flyingPieces.contains(pieceType))
+		{
+			throw new HantoException("This piece type cannot move!");
+		}
+	}
+	
+	/**
+	 * Pieces cannot move until the butterfly is placed
+	 * 
+	 * @param from the source location of the piece
+	 * @throws HantoException
+	 */
+	protected void onlyMoveAfterButterflyIsPlaced(HexCoordinate from) throws HantoException
+	{
+		if (from != null && gameState.getPieces().get(
+				gameState.getTurn()).contains(HantoPieceType.BUTTERFLY))
+		{
+			throw new HantoException("Cannot move until butterfly is placed!");
+		}
+	}
+	
+	/**
+	 * Verify that the the piece is allowed to walk and that it only
+	 * walks on hex
 	 * 
 	 * @param pieceType the piece being moved during this turn
 	 * @param from the source location of the piece
 	 * @param to the intended destination of the piece
 	 * @throws HantoException if the butterfly attempts to walk more than one hex
 	 */
-	protected void butterflyCanWalkOneHex(HantoPieceType pieceType, 
+	protected void pieceCanWalkOneHex(HantoPieceType pieceType, 
 			HexCoordinate from, HexCoordinate to) throws HantoException
 	{
-		if (from != null && pieceType == HantoPieceType.BUTTERFLY &&
-				!from.getAdjacentCoordinates().contains(to))
+		if (from != null)
 		{
-			throw new HantoException("Butterfly can only walk one hex!");
+			if (walkingPieces.contains(pieceType) && !canSlide(from, to))
+			{
+				throw new HantoException("This is not a valid walk!");
+			}
 		}
 	}
 	
@@ -162,22 +250,6 @@ public abstract class HantoRuleset
 	}
 	
 	/**
-	 * Ensure only butterflies are able to move
-	 * 
-	 * @param pieceType the piece being moved during this turn
-	 * @param from the source location of the piece
-	 * @throws HantoException
-	 */
-	protected void onlyButterfliesMayMove(
-			HantoPieceType pieceType, HexCoordinate from) throws HantoException
-	{
-		if (from != null && pieceType != HantoPieceType.BUTTERFLY)
-		{
-			throw new HantoException("Only butterflies may move in this game.");
-		}
-	}
-	
-	/**
 	 * Make sure all pieces will be adjacent if this move is made
 	 * 
 	 * @param to the destination of this move
@@ -206,5 +278,35 @@ public abstract class HantoRuleset
 		{
 			throw new HantoException("You must play your butterfly before or during round 4.");
 		}
+	}
+	
+	/**
+	 * Determine if a piece is able to slide from the given source location
+	 * to the given destination location.
+	 * @param from the source location
+	 * @param to the destination location
+	 * @return true if the piece is able to slide, false otherwise
+	 */
+	private boolean canSlide(HexCoordinate from, HexCoordinate to)
+	{
+		boolean ableToSlide = false;
+		
+		if (!from.getAdjacentCoordinates().contains(to))
+		{
+			ableToSlide = false;
+		}
+		else {
+			final Set<HexCoordinate> commonCells = to.getAdjacentCoordinates();
+			commonCells.retainAll(from.getAdjacentCoordinates());
+			for (HexCoordinate coord : commonCells)
+			{
+				if (gameState.getBoard().getCellAtCoordinate(coord) == null)
+				{
+					ableToSlide = true;
+				}
+			}
+		}
+		
+		return ableToSlide;
 	}
 }
