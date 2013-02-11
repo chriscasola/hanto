@@ -13,9 +13,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import hanto.common.HantoException;
-import hanto.studentccasola.util.GameState;
-import hanto.studentccasola.util.HexCell;
-import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.MoveResult;

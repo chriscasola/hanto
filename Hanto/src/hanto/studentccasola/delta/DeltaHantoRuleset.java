@@ -10,10 +10,10 @@
 package hanto.studentccasola.delta;
 
 import hanto.common.HantoException;
+import hanto.studentccasola.common.GameState;
 import hanto.studentccasola.common.HantoRuleset;
-import hanto.studentccasola.util.GameState;
-import hanto.studentccasola.util.HexCell;
-import hanto.studentccasola.util.HexCoordinate;
+import hanto.studentccasola.common.HexCell;
+import hanto.studentccasola.common.HexCoordinate;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;

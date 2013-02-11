@@ -7,8 +7,11 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.util;
+package hanto.studentccasola.common;
 
+import hanto.studentccasola.common.BasicHantoBoard;
+import hanto.studentccasola.common.HexCell;
+import hanto.studentccasola.common.HexCoordinate;
 import hanto.testutil.HexPiece;
 
 /**

@@ -10,8 +10,8 @@
 package hanto.studentccasola.gamma;
 
 import hanto.common.HantoException;
+import hanto.studentccasola.common.GameState;
 import hanto.studentccasola.common.HantoRuleset;
-import hanto.studentccasola.util.GameState;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.MoveResult;

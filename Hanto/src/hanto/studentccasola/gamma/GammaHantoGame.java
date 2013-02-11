@@ -14,8 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import hanto.studentccasola.common.AbstractHantoGame;
-import hanto.studentccasola.util.BasicHantoBoard;
-import hanto.studentccasola.util.GameState;
+import hanto.studentccasola.common.BasicHantoBoard;
+import hanto.studentccasola.common.GameState;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;

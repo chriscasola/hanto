@@ -15,8 +15,8 @@ import java.util.List;
 
 import hanto.common.HantoException;
 import hanto.studentccasola.common.AbstractHantoGame;
-import hanto.studentccasola.util.BasicHantoBoard;
-import hanto.studentccasola.util.GameState;
+import hanto.studentccasola.common.BasicHantoBoard;
+import hanto.studentccasola.common.GameState;
 import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
@@ -56,7 +56,7 @@ public class DeltaHantoGame extends AbstractHantoGame
 	@Override
 	public MoveResult makeMove(HantoPieceType pieceType, HantoCoordinate from,
 			HantoCoordinate to) throws HantoException
-			{
+	{
 		MoveResult moveResult;
 
 		if (pieceType == null && from == null && to == null)
@@ -68,7 +68,7 @@ public class DeltaHantoGame extends AbstractHantoGame
 		}
 
 		return moveResult;
-			}
+	}
 
 	private void distributePieces()
 	{

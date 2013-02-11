@@ -14,7 +14,7 @@ import hanto.common.HantoException;
 import hanto.studentccasola.HantoGameFactory;
 import hanto.studentccasola.common.AbstractHantoGame;
 import hanto.studentccasola.common.HantoGameTest;
-import hanto.studentccasola.util.HexCell;
+import hanto.studentccasola.common.HexCell;
 import hanto.testutil.TestHantoCoordinate;
 import hanto.util.HantoGameID;
 import hanto.util.HantoPieceType;

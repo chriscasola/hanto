@@ -12,8 +12,6 @@ package hanto.studentccasola.common;
 import java.util.Collection;
 
 import hanto.common.HantoException;
-import hanto.studentccasola.util.HexCell;
-import hanto.studentccasola.util.HexCoordinate;
 import hanto.util.HantoCoordinate;
 import hanto.util.MoveResult;
 
@@ -37,7 +35,7 @@ public interface HantoBoard
 	 * @throws HantoException if the cell is already occupied on the board or
 	 * the cell would not be adjacent to other occupied cells.
 	 */
-	void placePiece(HexCell hexCell) throws HantoException;
+	public void placePiece(HexCell hexCell) throws HantoException;
 	
 	/**
 	 * Moves the cell at the given from location to the given to location.
@@ -47,7 +45,7 @@ public interface HantoBoard
 	 * there is already a cell at the given to location, or if moving the piece
 	 * would result in all cells no longer being contiguous.
 	 */
-	void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException;
+	public void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException;
 	
 	/**
 	 * Returns OK if there is no winner, RED_WINS if the blue butterfly
@@ -56,7 +54,7 @@ public interface HantoBoard
 	 * 
 	 * @return the current state of the board
 	 */
-	MoveResult getBoardState();
+	public MoveResult getBoardState();
 	
 	/**
 	 * Determines if the given cell would be adjacent to other cells
@@ -66,7 +64,7 @@ public interface HantoBoard
 	 * @param cell the cell to check for adjacency
 	 * @return true if the cell would be adjacent to other cells, false otherwise
 	 */
-	boolean isAdjacent(HexCoordinate cell);
+	public boolean isAdjacent(HexCoordinate cell);
 	
 	
 	/**
@@ -76,24 +74,23 @@ public interface HantoBoard
 	 * @param coordinate the location on the board
 	 * @return the cell at the given location, or null if the location is unoccupied
 	 */
-	HexCell getCellAtCoordinate(HantoCoordinate coordinate);
+	public HexCell getCellAtCoordinate(HantoCoordinate coordinate);
 	
 	/**
 	 * @return a collection of the cells that are currently occupied
 	 * on the board
 	 */
-	Collection<HexCell> getCells();
+	public Collection<HexCell> getCells();
 	
 	/**
 	 * @return the number of cells currently occupied on the board
 	 */
-	int getNumOccupiedCells();
+	public int getNumOccupiedCells();
 	
 	/**
 	 * Ensure that the board is contiguous. That is all cells make up one
 	 * contiguous group.
 	 * @throws HantoException if the board is not contiguous
 	 */
-	void checkContiguity() throws HantoException;
-	
+	public void checkContiguity() throws HantoException;
 }

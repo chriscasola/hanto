@@ -7,7 +7,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.util;
+package hanto.studentccasola.common;
 
 import java.util.HashSet;
 import java.util.Set;

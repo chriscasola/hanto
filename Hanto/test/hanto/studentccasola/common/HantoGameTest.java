@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import hanto.common.HantoException;
 import hanto.studentccasola.HantoGameFactory;
 import hanto.studentccasola.gamma.GammaHantoRuleset;
-import hanto.studentccasola.util.HexCell;
 import hanto.testutil.TestHantoCoordinate;
 import hanto.util.HantoGameID;
 import hanto.util.HantoPieceType;

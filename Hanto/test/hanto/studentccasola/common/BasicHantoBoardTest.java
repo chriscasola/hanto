@@ -7,7 +7,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package hanto.studentccasola.util;
+package hanto.studentccasola.common;
 
 import static org.junit.Assert.*;
 
@@ -15,9 +15,7 @@ import java.util.ArrayList;
 import java.util.Set;
 
 import hanto.common.HantoException;
-import hanto.studentccasola.util.BasicHantoBoard;
-import hanto.studentccasola.util.HexCell;
-import hanto.studentccasola.util.HexCoordinate;
+import hanto.studentccasola.common.BasicHantoBoard;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
