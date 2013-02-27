@@ -11,10 +11,13 @@ package hanto.studentccasola.tournament;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import hanto.common.HantoException;
+import hanto.common.HantoGame;
 import hanto.studentccasola.common.GameState;
 import hanto.studentccasola.common.HexCell;
 import hanto.studentccasola.common.HexCoordinate;
@@ -35,11 +38,13 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 	private final HantoPlayerColor myColor;
 	private final DeltaHantoGame game;
 	private HexCoordinate myButterfly;
+	private Random randGen;
 	
 	public DeltaHantoPlayer(HantoPlayerColor myColor, boolean isFirst)
 	{
 		this.myColor = myColor;
 		game = new DeltaHantoGame();
+		randGen = new Random(9);
 	}
 
 	/* 
@@ -79,13 +84,15 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		HantoMoveRecord result = null;
 		
 		// Place butterfly if not already placed
-		if (game.getState().getPieces().get(myColor).contains(HantoPieceType.BUTTERFLY))
+		//if (game.getState().getPieces().get(myColor).contains(HantoPieceType.BUTTERFLY))
+		if (myButterfly == null)
 		{
 			HantoPieceType piece = HantoPieceType.BUTTERFLY;
-			HexCoordinate dest = findValidPlacement(piece);
+			HexCoordinate dest = findValidPlacementHelper(piece);
 			if (dest != null)
 			{
 				result = new HantoMoveRecord(piece, null, dest);
+				myButterfly = dest;
 			}
 		}
 		
@@ -93,7 +100,7 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		if (result == null && game.getState().getPieces().get(myColor).size() > 0)
 		{
 			HantoPieceType piece = game.getState().getPieces().get(myColor).get(0);
-			HexCoordinate dest = findValidPlacement(piece);
+			HexCoordinate dest = findValidPlacementHelper(piece);
 			if (dest != null)
 			{
 				result = new HantoMoveRecord(piece, null, dest);
@@ -103,7 +110,12 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		// Move a piece if placement was not possible
 		if (result == null)
 		{
+			System.out.println("Trying to make move");
 			result = movePiece();
+			if (result != null)
+			{
+				System.out.println("Found move");
+			}
 		}
 		
 		// Make the move
@@ -115,15 +127,31 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		return result;
 	}
 	
+	protected HexCoordinate findValidPlacementHelper(HantoPieceType pieceType)
+	{
+		List<HexCoordinate> validCoord = findValidPlacement(pieceType);
+		if (validCoord.size() > 0)
+		{
+			return validCoord.get(randGen.nextInt(validCoord.size()));
+		}
+		return null;
+	}
+	
 	protected HantoMoveRecord movePiece()
 	{
-		Random randGen = new Random(System.currentTimeMillis());
 		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
 		HexCell[] cells = game.getState().getBoard().getCells().toArray(new HexCell[0]);
-		
-		while (possibleMoves.size() < 1)
+		List<HexCell> cellList = new ArrayList<HexCell>();
+		for (int i = 0; i < cells.length; i++)
 		{
-			HexCell cell = cells[randGen.nextInt(cells.length)];
+			if (i == 0)
+				cellList.add(cells[i]);
+			else
+				cellList.add(randGen.nextInt(cellList.size()), cells[i]);
+		}
+		
+		for (HexCell cell : cellList)
+		{
 			if (cell.getPlayer() == myColor && cell.getPiece() == HantoPieceType.SPARROW)
 			{
 				for (HexCoordinate coord : myButterfly.getAdjacentCoordinates())
@@ -158,11 +186,6 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 					}
 				}
 			}
-			
-			// TODO attempt to move crabs toward butterfly if no sparrows were moved
-			
-			// TODO attempt to move piece randomly if no crabs were moved, otherwise resign
-			
 		}
 		
 		if (possibleMoves.size() > 0)
@@ -176,28 +199,38 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		}
 	}
 	
-	protected HexCoordinate findValidPlacement(HantoPieceType pieceType)
+	protected List<HexCoordinate> findValidPlacement(HantoPieceType pieceType)
 	{
 		Collection<HexCell> cells = game.getState().getBoard().getCells();
+		Set<HexCoordinate> validCells = new HashSet<HexCoordinate>();
 		for (HexCell cell : cells)
 		{
-			for (HexCoordinate coord : cell.getCoordinate().getAdjacentCoordinates())
+			if (cell.getPlayer() == game.getState().getTurn() || game.getState().getCurrentRound() < 2)
 			{
-				try {
-					game.getRuleset().checkAll(pieceType, null, coord);
-					if (game.getState().getBoard().getCellAtCoordinate(coord) == null)
-					{
-						return coord;
+				for (HexCoordinate coord : cell.getCoordinate().getAdjacentCoordinates())
+				{
+					try {
+						game.getRuleset().checkAll(pieceType, null, coord);
+						if (game.getState().getBoard().getCellAtCoordinate(coord) == null)
+						{
+							validCells.add(coord);
+						}
+					} 
+					catch (HantoException e) {
+						// keep looking for a valid placement
+						continue;
 					}
-				} 
-				catch (HantoException e) {
-					// keep looking for a valid placement
-					continue;
 				}
 			}
 		}
-		
-		return null;
+		List<HexCoordinate> retVal = new ArrayList<HexCoordinate>();
+		retVal.addAll(validCells);
+		return retVal;
+	}
+	
+	protected HantoGame getGame()
+	{
+		return game;
 	}
 	
 	protected GameState getGameState()
