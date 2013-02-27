@@ -29,8 +29,9 @@ import hanto.util.HantoPlayerColor;
  */
 public class DeltaHantoPlayer implements HantoGamePlayer
 {
-	private HantoPlayerColor myColor;
-	private DeltaHantoGame game;
+	private final HantoPlayerColor myColor;
+	private final DeltaHantoGame game;
+	private HexCoordinate myButterfly;
 	
 	public DeltaHantoPlayer(HantoPlayerColor myColor, boolean isFirst)
 	{
@@ -51,13 +52,14 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 				game.makeMove(opponentsMove.getPiece(), opponentsMove.getFrom(), opponentsMove.getTo());
 				
 				// Make a move
-				result = makeMove();
+				result = findMove();
 			}
 			else {
 				// Set the color of this player
 				game.initialize(myColor);
 				
 				// Make the first move, at the origin
+				myButterfly = new HexCoordinate(0,0);
 				result = new HantoMoveRecord(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,0));
 				game.makeMove(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,0));
 			}
@@ -69,12 +71,23 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		return result;
 	}
 
-	protected HantoMoveRecord makeMove() throws HantoException
+	protected HantoMoveRecord findMove() throws HantoException
 	{
 		HantoMoveRecord result = null;
 		
+		// Place butterfly if not already placed
+		if (game.getState().getPieces().get(myColor).contains(HantoPieceType.BUTTERFLY))
+		{
+			HantoPieceType piece = HantoPieceType.BUTTERFLY;
+			HexCoordinate dest = findValidPlacement(piece);
+			if (dest != null)
+			{
+				result = new HantoMoveRecord(piece, null, dest);
+			}
+		}
+		
 		// Place a piece if possible
-		if (game.getState().getPieces().get(myColor).size() > 0)
+		if (result == null && game.getState().getPieces().get(myColor).size() > 0)
 		{
 			HantoPieceType piece = game.getState().getPieces().get(myColor).get(0);
 			HexCoordinate dest = findValidPlacement(piece);
@@ -87,13 +100,44 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		// Move a piece if placement was not possible
 		if (result == null)
 		{
-			// TODO move piece
+			result = movePiece();
 		}
 		
 		// Make the move
 		game.makeMove(result.getPiece(), result.getFrom(), result.getTo());
 		
 		return result;
+	}
+	
+	protected HantoMoveRecord movePiece()
+	{
+		HantoMoveRecord result;
+		for (HexCell cell : game.getState().getBoard().getCells())
+		{
+			if (cell.getPlayer() == myColor && cell.getPiece() == HantoPieceType.SPARROW)
+			{
+				for (HexCoordinate coord : myButterfly.getAdjacentCoordinates())
+				{
+					if (game.getState().getBoard().getCellAtCoordinate(coord) == null)
+					{
+						try {
+							game.getRuleset().checkAll(cell.getPiece(), cell.getCoordinate(), coord);
+							result = new HantoMoveRecord(cell.getPiece(), cell.getCoordinate(), coord);
+							return result;
+						}
+						catch (HantoException e) {
+							// keep looking
+							continue;
+						}
+					}
+				}
+			}
+			// TODO attempt to move crabs toward butterfly if no sparrows were moved
+			
+			// TODO attempt to move piece randomly if no crabs were moved, otherwise resign
+			
+		}
+		return null;
 	}
 	
 	protected HexCoordinate findValidPlacement(HantoPieceType pieceType)

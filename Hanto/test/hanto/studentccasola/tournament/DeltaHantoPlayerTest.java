@@ -19,6 +19,7 @@ import hanto.tournament.HantoMoveRecord;
 import hanto.util.HantoGameID;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
+import hanto.util.MoveResult;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,19 +32,40 @@ import org.junit.Test;
 public class DeltaHantoPlayerTest
 {
 	private DeltaHantoPlayer player;
+	private DeltaHantoPlayer player2;
 	private HantoGame game;
 
 	@Before
 	public void setup()
 	{
 		player = new DeltaHantoPlayer(HantoPlayerColor.BLUE, true);
+		player2 = new DeltaHantoPlayer(HantoPlayerColor.RED, false);
 		game = HantoGameFactory.getInstance().makeHantoGame(HantoGameID.DELTA_HANTO);
 	}
 	
 	@Test
-	public void continueMakingMovesAfterPiecesArePlaced()
+	public void continueMakingMovesAfterPiecesArePlaced() throws HantoException
 	{
+		HantoMoveRecord lastMove;
 		
+		lastMove = player.makeMove(null);
+		game.makeMove(lastMove.getPiece(), lastMove.getFrom(), lastMove.getTo());
+		lastMove = player2.makeMove(lastMove);
+		game.makeMove(lastMove.getPiece(), lastMove.getFrom(), lastMove.getTo());
+		
+		for (int i = 0; i < 10; i++)
+		{
+			lastMove = player.makeMove(lastMove);
+			if (game.makeMove(lastMove.getPiece(), lastMove.getFrom(), lastMove.getTo()) != MoveResult.OK)
+			{
+				break;
+			}
+			lastMove = player2.makeMove(lastMove);
+			if (game.makeMove(lastMove.getPiece(), lastMove.getFrom(), lastMove.getTo()) != MoveResult.OK)
+			{
+				break;
+			}
+		}
 	}
 
 	@Test
