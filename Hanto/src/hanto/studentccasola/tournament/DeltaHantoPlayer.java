@@ -9,7 +9,10 @@
  *******************************************************************************/
 package hanto.studentccasola.tournament;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 import hanto.common.HantoException;
 import hanto.studentccasola.common.GameState;
@@ -104,16 +107,23 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		}
 		
 		// Make the move
-		game.makeMove(result.getPiece(), result.getFrom(), result.getTo());
+		if (result != null)
+		{
+			game.makeMove(result.getPiece(), result.getFrom(), result.getTo());
+		}
 		
 		return result;
 	}
 	
 	protected HantoMoveRecord movePiece()
 	{
-		HantoMoveRecord result;
-		for (HexCell cell : game.getState().getBoard().getCells())
+		Random randGen = new Random(System.currentTimeMillis());
+		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
+		HexCell[] cells = game.getState().getBoard().getCells().toArray(new HexCell[0]);
+		
+		while (possibleMoves.size() < 1)
 		{
+			HexCell cell = cells[randGen.nextInt(cells.length)];
 			if (cell.getPlayer() == myColor && cell.getPiece() == HantoPieceType.SPARROW)
 			{
 				for (HexCoordinate coord : myButterfly.getAdjacentCoordinates())
@@ -122,8 +132,7 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 					{
 						try {
 							game.getRuleset().checkAll(cell.getPiece(), cell.getCoordinate(), coord);
-							result = new HantoMoveRecord(cell.getPiece(), cell.getCoordinate(), coord);
-							return result;
+							possibleMoves.add(new HantoMoveRecord(cell.getPiece(), cell.getCoordinate(), coord));
 						}
 						catch (HantoException e) {
 							// keep looking
@@ -132,12 +141,39 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 					}
 				}
 			}
+			else if (cell.getPlayer() == myColor && cell.getPiece() == HantoPieceType.CRAB)
+			{
+				for (HexCoordinate coord : cell.getCoordinate().getAdjacentCoordinates())
+				{
+					if (game.getState().getBoard().getCellAtCoordinate(coord) == null)
+					{
+						try {
+							game.getRuleset().checkAll(cell.getPiece(), cell.getCoordinate(), coord);
+							possibleMoves.add(new HantoMoveRecord(cell.getPiece(), cell.getCoordinate(), coord));
+						}
+						catch (HantoException e) {
+							// keep looking
+							continue;
+						}
+					}
+				}
+			}
+			
 			// TODO attempt to move crabs toward butterfly if no sparrows were moved
 			
 			// TODO attempt to move piece randomly if no crabs were moved, otherwise resign
 			
 		}
-		return null;
+		
+		if (possibleMoves.size() > 0)
+		{
+			int movePick = randGen.nextInt(possibleMoves.size());
+			return possibleMoves.get(movePick);
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	protected HexCoordinate findValidPlacement(HantoPieceType pieceType)
