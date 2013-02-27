@@ -105,14 +105,7 @@ public class BasicHantoBoard implements HantoBoard
 			{
 				if (state == MoveResult.OK)
 				{
-					if (cell.getPlayer() == HantoPlayerColor.BLUE)
-					{
-						state = MoveResult.RED_WINS;
-					}
-					else
-					{
-						state = MoveResult.BLUE_WINS;
-					}
+					state = (cell.getPlayer() == HantoPlayerColor.BLUE) ? MoveResult.RED_WINS : MoveResult.BLUE_WINS;
 				}
 				else
 				{
