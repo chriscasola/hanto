@@ -143,6 +143,14 @@ public abstract class AbstractHantoGame implements HantoGame
 		return gameState;
 	}
 	
+	/**
+	 * @return the ruleset for this game
+	 */
+	public HantoRuleset getRuleset()
+	{
+		return ruleset;
+	}
+	
 	/* 
 	 * @see hanto.common.HantoGame#getPrintableBoard()
 	 */

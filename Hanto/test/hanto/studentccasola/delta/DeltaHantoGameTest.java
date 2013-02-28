@@ -40,11 +40,123 @@ public class DeltaHantoGameTest extends HantoGameTest
 	}
 	
 	@Test
+	public void tryingToDisconnectPieceDoesNotModifyBoard() throws HantoException
+	{
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,-1));
+		
+		// place sparrows
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,1));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-1,-1));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-1,2));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,-2));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-2,2));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-2,-1));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,0));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,-3));
+		
+		// place crabs
+		game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-2,3));
+		game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-2,-2));
+		game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-1,1));
+		game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(2,-3));
+		game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-3,2));
+		game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-2,-3));
+		game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-3,4));
+		game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-2,-4));
+		
+		// move pieces
+		game.makeMove(HantoPieceType.SPARROW, new TestHantoCoordinate(-1,2), new TestHantoCoordinate(1,-1));
+		String board = game.getPrintableBoard();
+		try {
+			game.makeMove(HantoPieceType.SPARROW, new TestHantoCoordinate(-2,-1), new TestHantoCoordinate(0,-2));
+		}
+		catch(HantoException e)
+		{
+			assertEquals(board, game.getPrintableBoard());
+		}
+	}
+	
+	@Test
 	public void peiceMayBePlaced() throws HantoException
 	{
 		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
 		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(1,0));
 		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-1,0));
+	}
+	
+	@Test(expected=HantoException.class)
+	public void cannotMoveCrabFromUnoccupiedHex() throws HantoException
+	{
+		try {
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0)); //blue
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,1)); //red
+			
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-1,0)); //blue
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,2)); //red
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-1,-1)); //blue
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,3)); //red
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,-2)); //blue
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,4)); //red
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,-3)); //blue
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,5)); //red
+			
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(0,-1)); //blue
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-1,4)); //red
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(1,-2)); //blue
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(1,4)); //red
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(1,-3)); //blue
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-1,2)); //red
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(2,-3)); //blue
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(2,3)); //red
+			
+			game.makeMove(HantoPieceType.CRAB, new TestHantoCoordinate(1,-3), new TestHantoCoordinate(2,-4)); //blue
+			game.makeMove(HantoPieceType.CRAB, new TestHantoCoordinate(-1,2), new TestHantoCoordinate(-1,3)); //red
+			
+			game.makeMove(HantoPieceType.SPARROW, new TestHantoCoordinate(-1,0), new TestHantoCoordinate(1,0)); //blue
+		}
+		catch (HantoException e)
+		{
+			fail("The code above should not throw an exception");
+		}
+		game.makeMove(HantoPieceType.CRAB, new TestHantoCoordinate(-2,5), new TestHantoCoordinate(-1,5)); //red
+	}
+	
+	@Test(expected=HantoException.class)
+	public void cannotMovePieceAndDisconnectBoard() throws HantoException
+	{
+		try {
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0)); // blue butterfly
+			game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(1,-1)); // red butterfly
+			
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,1)); // blue sparrow
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(2,-1)); // red sparrow
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-1,2)); // blue sparrow
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(3,-1)); // red sparrow
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-1,1)); // blue sparrow
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(2,-2)); // red sparrow
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-2,2)); // blue sparrow
+			game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(2,-3)); // red sparrow
+			
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-2,1)); // blue crab
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(1,-3)); // red crab
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-3,3)); // blue crab
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(4,-1)); // red crab
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-1,0)); // blue crab
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(2,0)); // red crab
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(-1,-1)); // blue crab
+			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(5,-2)); // red crab
+			
+			game.makeMove(HantoPieceType.SPARROW, new TestHantoCoordinate(-1,2), new TestHantoCoordinate(1,0)); // blue move sparrow
+			
+			game.makeMove(HantoPieceType.SPARROW, new TestHantoCoordinate(2,-1), new TestHantoCoordinate(1,-2)); // red move sparrow
+			
+			game.makeMove(HantoPieceType.CRAB, new TestHantoCoordinate(-1,-1), new TestHantoCoordinate(-2,0)); // blue move crab
+		}
+		catch (HantoException e) {
+			fail("No exception should have occurred in the block above");
+		}
+		game.makeMove(HantoPieceType.CRAB, new TestHantoCoordinate(4,-1), new TestHantoCoordinate(5,-1)); // blue move crab to disconnected cell
 	}
 	
 	@Test(expected=HantoException.class)

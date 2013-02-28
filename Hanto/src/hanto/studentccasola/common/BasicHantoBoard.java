@@ -87,6 +87,7 @@ public class BasicHantoBoard implements HantoBoard
 		}
 		catch (HantoException e) // error occurred placing the new cell, put the old one back
 		{
+			coordinateMap.remove(newCell.getCoordinate());
 			coordinateMap.put(oldCell.getCoordinate(), oldCell);
 			throw new HantoException("Cannot place new cell.", e);
 		}
@@ -105,14 +106,7 @@ public class BasicHantoBoard implements HantoBoard
 			{
 				if (state == MoveResult.OK)
 				{
-					if (cell.getPlayer() == HantoPlayerColor.BLUE)
-					{
-						state = MoveResult.RED_WINS;
-					}
-					else
-					{
-						state = MoveResult.BLUE_WINS;
-					}
+					state = (cell.getPlayer() == HantoPlayerColor.BLUE) ? MoveResult.RED_WINS : MoveResult.BLUE_WINS;
 				}
 				else
 				{
