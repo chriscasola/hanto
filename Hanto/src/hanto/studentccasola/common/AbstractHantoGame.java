@@ -95,7 +95,7 @@ public abstract class AbstractHantoGame implements HantoGame
 			gameState.getBoard().placePiece(new HexCell(to, gameState.getTurn(), pieceType));
 
 			// Remove the piece from the player's available list
-			usePiece(pieceType);
+			gameState.usePiece(pieceType);
 		}
 		
 		// Move the game state to the next turn
@@ -125,22 +125,19 @@ public abstract class AbstractHantoGame implements HantoGame
 	}
 	
 	/**
-	 * Removes the give piece from the current player's list of available
-	 * pieces.
-	 * 
-	 * @param piece the piece to remove
-	 */
-	protected void usePiece(HantoPieceType piece)
-	{
-		gameState.getPieces().get(gameState.getTurn()).remove(piece);
-	}
-	
-	/**
 	 * @return the state of this game
 	 */
 	public GameState getState()
 	{
 		return gameState;
+	}
+	
+	/**
+	 * @return the ruleset for this game
+	 */
+	public HantoRuleset getRuleset()
+	{
+		return ruleset;
 	}
 	
 	/* 

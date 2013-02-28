@@ -52,9 +52,8 @@ public class BasicHantoBoard implements HantoBoard
 	@Override
 	public void placePiece(HexCell hexCell) throws HantoException
 	{
-		if (coordinateMap.containsKey(hexCell.getCoordinate()))
-		{
-			throw new HantoException("This cell already contains a piece.");
+		if (coordinateMap.containsKey(hexCell.getCoordinate())) {
+			throw new HantoException("Cannot place piece on top of another piece.");
 		}
 		coordinateMap.put(hexCell.getCoordinate(), hexCell);
 	}
@@ -63,14 +62,15 @@ public class BasicHantoBoard implements HantoBoard
 	 * @see hanto.studentccasola.common.HantoBoard#movePiece(
 	 * hanto.util.HantoCoordinate, hanto.util.HantoCoordinate)
 	 */
+	@Override
 	public void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException
 	{
+		if (this.getCellAtCoordinate(to) != null) {
+			throw new HantoException("Cannot move on top of another piece!");
+		}
+		
 		// Get the cell currently at the from coordinate
 		final HexCell oldCell = coordinateMap.get(new HexCoordinate(from));
-		if (oldCell == null)
-		{
-			throw new HantoException("There is no cell at the given from coordinate");
-		}
 
 		// Create the new cell, replacing the coordinate of the old cell
 		final HexCell newCell = new HexCell(to, oldCell.getPlayer(), oldCell.getPiece());
@@ -78,18 +78,7 @@ public class BasicHantoBoard implements HantoBoard
 		// Remove the old cell
 		coordinateMap.remove(new HexCoordinate(from));
 
-		// Place the new cell in the board
-		try
-		{
-			placePiece(newCell);
-			checkContiguity();
-			
-		}
-		catch (HantoException e) // error occurred placing the new cell, put the old one back
-		{
-			coordinateMap.put(oldCell.getCoordinate(), oldCell);
-			throw new HantoException("Cannot place new cell.", e);
-		}
+		placePiece(newCell);
 	}
 
 	/* 
@@ -105,14 +94,8 @@ public class BasicHantoBoard implements HantoBoard
 			{
 				if (state == MoveResult.OK)
 				{
-					if (cell.getPlayer() == HantoPlayerColor.BLUE)
-					{
-						state = MoveResult.RED_WINS;
-					}
-					else
-					{
-						state = MoveResult.BLUE_WINS;
-					}
+					state = (cell.getPlayer() == HantoPlayerColor.BLUE) ? 
+							MoveResult.RED_WINS : MoveResult.BLUE_WINS;
 				}
 				else
 				{
@@ -161,6 +144,45 @@ public class BasicHantoBoard implements HantoBoard
 			isAdjacent = true;
 		}
 		return isAdjacent;
+	}
+	
+	/* 
+	 * @see hanto.studentccasola.common.HantoBoard#checkMove(
+	 * 		hanto.util.HantoCoordinate, hanto.util.HantoCoordinate)
+	 */
+	@Override
+	public boolean canMove(HantoCoordinate from, HantoCoordinate to)
+	{
+		// Return value
+		boolean isValid = true;
+		
+		// Get the cell currently at the from coordinate
+		final HexCell oldCell = coordinateMap.get(new HexCoordinate(from));
+
+		// Create the new cell, replacing the coordinate of the old cell
+		final HexCell newCell = new HexCell(to, oldCell.getPlayer(), oldCell.getPiece());
+
+		// Remove the old cell from the board
+		coordinateMap.remove(new HexCoordinate(from));
+
+		// Place the new cell in the board
+		try
+		{
+			placePiece(newCell);
+			checkContiguity();
+		}
+		catch (HantoException e) // error occurred placing the new cell, put the old one back
+		{
+			isValid = false;
+		}
+		finally
+		{
+			// Put everything back
+			coordinateMap.remove(newCell.getCoordinate());
+			coordinateMap.put(oldCell.getCoordinate(), oldCell);
+		}
+		
+		return isValid;
 	}
 
 	/* 

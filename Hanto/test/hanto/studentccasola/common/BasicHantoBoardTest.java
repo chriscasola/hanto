@@ -42,27 +42,6 @@ public class BasicHantoBoardTest
 		board = new BasicHantoBoard();
 	}
 	
-	@Test(expected=HantoException.class)
-	public void shouldNotBeAbleToMoveAPieceAndViolateAdjacencyConstraint() throws HantoException
-	{
-		final HexCoordinate coord1 = new HexCoordinate(0,0);
-		final HexCoordinate coord2 = new HexCoordinate(0,1);
-		final HexCoordinate coord3 = new HexCoordinate(0,10);
-		final HexCell cell1 = new HexCell(coord1, HantoPlayerColor.RED, HantoPieceType.SPARROW);
-		final HexCell cell2 = new HexCell(coord2, HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY);
-
-		try
-		{
-			board.placePiece(cell1);
-			board.placePiece(cell2);
-		}
-		catch (HantoException e)
-		{
-			fail("The above piece placement should have succeeded.");
-		}
-		board.movePiece(coord1, coord3);
-	}
-	
 	@Test
 	public void shouldBeAbleToMoveAPiece() throws HantoException
 	{
@@ -72,39 +51,12 @@ public class BasicHantoBoardTest
 		final HexCell cell1 = new HexCell(coord1, HantoPlayerColor.RED, HantoPieceType.SPARROW);
 		final HexCell cell2 = new HexCell(coord2, HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY);
 
-		try
-		{
-			board.placePiece(cell1);
-			board.placePiece(cell2);
-		}
-		catch (HantoException e)
-		{
-			fail("The above piece placement should have succeeded.");
-		}
+		board.placePiece(cell1);
+		board.placePiece(cell2);
+
 		board.movePiece(coord1, coord3);
 		assertNull(board.getCellAtCoordinate(coord1));
 		assertEquals(new HexCell(coord3, HantoPlayerColor.RED, HantoPieceType.SPARROW), board.getCellAtCoordinate(coord3));
-	}
-	
-	@Test(expected=HantoException.class)
-	public void shouldNotMovePieceOntoAnotherPiece() throws HantoException
-	{
-		try
-		{
-			board.placePiece(new HexCell(new HexCoordinate(0,0), HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY));
-			board.placePiece(new HexCell(new HexCoordinate(0,1), HantoPlayerColor.BLUE, HantoPieceType.BUTTERFLY));
-		}
-		catch (HantoException e)
-		{
-			fail("The above piece placement should have succeeded.");
-		}
-		board.movePiece(new HexCoordinate(0,0), new HexCoordinate(0,1));
-	}
-	
-	@Test(expected=HantoException.class)
-	public void anAttemptToMoveAPieceThatDoesNotExistShouldFail() throws HantoException
-	{
-		board.movePiece(new HexCoordinate(0,0), new HexCoordinate(1,1));
 	}
 
 	@Test
@@ -242,25 +194,6 @@ public class BasicHantoBoardTest
 				"Coordinate: (-1,2) Player: BLUE Piece: Sparrow\n";
 
 		assertEquals(expectedOutput, board.toString());
-	}
-
-	/**
-	 * Make sure a piece cannot be placed in an occupied cell
-	 * @throws HantoException 
-	 */
-	@Test(expected=HantoException.class)
-	public void onlyOnePieceMayOccupyEachCell() throws HantoException
-	{
-		HexCell hexCell = new HexCell(new HexCoordinate(0,0), HantoPlayerColor.BLUE, HantoPieceType.SPARROW);
-		HexCell hexCell2 = new HexCell(new HexCoordinate(0,0), HantoPlayerColor.RED, HantoPieceType.SPARROW);
-		try
-		{
-			board.placePiece(hexCell);
-		}
-		catch (HantoException e) {
-			fail("The cell was not occupied, so the first placePiece() should have succeeded.");
-		}
-		board.placePiece(hexCell2);
 	}
 
 	/**

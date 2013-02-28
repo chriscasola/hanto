@@ -79,6 +79,8 @@ public abstract class HantoRuleset
 		pieceToMoveMatchesPieceAtFrom(pieceType, hexFrom);
 		piecesMustBeAdjacent(hexTo);
 		playButterflyByRoundFour(pieceType);
+		boardMustRemainConnected(hexFrom, hexTo);
+		cannotMoveOntoAnotherPiece(hexTo);
 	}
 	
 	/**
@@ -93,6 +95,27 @@ public abstract class HantoRuleset
 			HantoCoordinate to) throws HantoException
 	{
 		gameState.getBoard().checkContiguity();
+	}
+	
+	/**
+	 * Checks that all rules specified in this class are met
+	 * 
+	 * @param pieceType the piece being placed/moved
+	 * @param from the source location of the piece
+	 * @param to the destination location of the piece
+	 * @return true if the given move would be valid, false otherwise
+	 */
+	public boolean isValidMove(HantoPieceType pieceType, HantoCoordinate from, 
+			HantoCoordinate to)
+	{
+		boolean isValid = true;
+		try {
+			checkAll(pieceType, from, to);
+		}
+		catch (HantoException e) {
+			isValid = false;
+		}
+		return isValid;
 	}
 	
 	/**
@@ -120,6 +143,34 @@ public abstract class HantoRuleset
 	{
 		if (gameState.getStatus() != MoveResult.OK) {
 			throw new HantoException("The game is over, no more moves can be played.");
+		}
+	}
+	
+	/**
+	 * Make sure the move would not place the piece on top of another piece
+	 * @param to the destination of the move
+	 * @throws HantoException
+	 */
+	protected void cannotMoveOntoAnotherPiece(HexCoordinate to) throws HantoException
+	{
+		if (gameState.getBoard().getCellAtCoordinate(to) != null)
+		{
+			throw new HantoException("Cannot move or place a piece on another piece.");
+		}
+	}
+	
+	/**
+	 * Make sure the move would not result in the board becoming disconnected
+	 * @param from the source location of the piece
+	 * @param to the destination of the move
+	 * @throws HantoException
+	 */
+	protected void boardMustRemainConnected(HexCoordinate from, HexCoordinate to) 
+			throws HantoException
+	{
+		if (from != null && !gameState.getBoard().canMove(from, to))
+		{
+			throw new HantoException("This move would result in the board becoming disconnected.");
 		}
 	}
 	

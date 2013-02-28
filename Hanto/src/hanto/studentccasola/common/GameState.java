@@ -82,6 +82,17 @@ public class GameState
 	}
 	
 	/**
+	 * Remove the given piece from the list of available pieces for the player
+	 * whose turn it currently is.
+	 * 
+	 * @param piece the piece that was used
+	 */
+	public void usePiece(HantoPieceType piece)
+	{
+		pieces.get(turn).remove(piece);
+	}
+	
+	/**
 	 * Set the current turn
 	 * 
 	 * @param turn the current turn
