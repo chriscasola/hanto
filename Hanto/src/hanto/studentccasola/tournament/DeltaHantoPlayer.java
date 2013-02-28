@@ -120,12 +120,10 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		// Move a piece if placement was not possible
 		if (result == null)
 		{
-			System.out.println("Trying to make move");
 			result = movePiece();
 			if (result != null)
 			{
 				game.makeMove(result.getPiece(), result.getFrom(), result.getTo());
-				System.out.println("Found move");
 			}
 		}
 
@@ -209,16 +207,9 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 			{
 				for (HexCoordinate coord : cell.getCoordinate().getAdjacentCoordinates())
 				{
-					try {
-						game.getRuleset().checkAll(pieceType, null, coord);
-						if (game.getState().getBoard().getCellAtCoordinate(coord) == null)
-						{
-							validCells.add(coord);
-						}
-					} 
-					catch (HantoException e) {
-						// keep looking for a valid placement
-						continue;
+					if (game.getRuleset().isValidMove(pieceType, null, coord))
+					{
+						validCells.add(coord);
 					}
 				}
 			}

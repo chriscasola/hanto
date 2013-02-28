@@ -49,8 +49,8 @@ public class DeltaHantoPlayerTest
 	public void playerWorksWithDirector()
 	{
 		System.out.println("\n\n------Starting Director test----------\n\n");
-		player.randSeed(1362005752870l);
-		player2.randSeed(1362005752870l);
+		//player.randSeed(1362005752870l);
+		//player2.randSeed(1362005752870l);
 		
 		HantoGameDirector director = HantoGameDirector.getInstance();
 		if (director == null)

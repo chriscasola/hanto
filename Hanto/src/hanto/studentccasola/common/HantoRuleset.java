@@ -80,6 +80,7 @@ public abstract class HantoRuleset
 		piecesMustBeAdjacent(hexTo);
 		playButterflyByRoundFour(pieceType);
 		boardMustRemainConnected(hexFrom, hexTo);
+		cannotMoveOntoAnotherPiece(hexTo);
 	}
 	
 	/**
@@ -141,6 +142,14 @@ public abstract class HantoRuleset
 	{
 		if (gameState.getStatus() != MoveResult.OK) {
 			throw new HantoException("The game is over, no more moves can be played.");
+		}
+	}
+	
+	protected void cannotMoveOntoAnotherPiece(HexCoordinate to) throws HantoException
+	{
+		if (gameState.getBoard().getCellAtCoordinate(to) != null)
+		{
+			throw new HantoException("Cannot move or place a piece on another piece.");
 		}
 	}
 	

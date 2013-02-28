@@ -50,8 +50,11 @@ public class BasicHantoBoard implements HantoBoard
 	 * @see hanto.studentccasola.common.HantoBoard#placePiece(hanto.studentccasola.util.HexCell)
 	 */
 	@Override
-	public void placePiece(HexCell hexCell)
+	public void placePiece(HexCell hexCell) throws HantoException
 	{
+		if (coordinateMap.containsKey(hexCell.getCoordinate())) {
+			throw new HantoException("Cannot place piece on top of another piece.");
+		}
 		coordinateMap.put(hexCell.getCoordinate(), hexCell);
 	}
 
@@ -60,8 +63,12 @@ public class BasicHantoBoard implements HantoBoard
 	 * hanto.util.HantoCoordinate, hanto.util.HantoCoordinate)
 	 */
 	@Override
-	public void movePiece(HantoCoordinate from, HantoCoordinate to)
+	public void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException
 	{
+		if (this.getCellAtCoordinate(to) != null) {
+			throw new HantoException("Cannot move on top of another piece!");
+		}
+		
 		// Get the cell currently at the from coordinate
 		final HexCell oldCell = coordinateMap.get(new HexCoordinate(from));
 

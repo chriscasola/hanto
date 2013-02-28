@@ -23,6 +23,7 @@ import hanto.util.MoveResult;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DeltaHantoGameTest extends HantoGameTest
@@ -281,5 +282,32 @@ public class DeltaHantoGameTest extends HantoGameTest
 			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(0,-i));
 			game.makeMove(HantoPieceType.CRAB, null, new TestHantoCoordinate(0,i+1));
 		}
+	}
+	
+	@Test(expected=HantoException.class)
+	public void cannotPlacePieceOnTopOfAnotherPiece() throws HantoException
+	{
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,1));
+		
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,-1));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,1));
+		
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,-1));
+	}
+	
+	@Test(expected=HantoException.class)
+	public void cannotMovePieceOntoAnotherPiece() throws HantoException
+	{
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,0));
+		game.makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(0,1));
+		
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,-1));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,1));
+		
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,-1));
+		game.makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(0,2));
+		
+		game.makeMove(HantoPieceType.SPARROW, new TestHantoCoordinate(1,-1), new TestHantoCoordinate(0,-1));
 	}
 }

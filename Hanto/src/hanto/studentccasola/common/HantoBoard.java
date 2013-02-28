@@ -32,15 +32,18 @@ public interface HantoBoard
 	 * already occupied on the board.
 	 * 
 	 * @param hexCell the cell to place
+	 * @throws HantoException if an attempt is made to place a piece on
+	 * top of another piece
 	 */
-	public void placePiece(HexCell hexCell);
+	public void placePiece(HexCell hexCell) throws HantoException;
 	
 	/**
 	 * Moves the cell at the given from location to the given to location.
 	 * @param from the original location of the cell
 	 * @param to the new location of the cell
+	 * @throws HantoException if an attempt is made to move on top of another piece
 	 */
-	public void movePiece(HantoCoordinate from, HantoCoordinate to);
+	public void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException;
 	
 	/**
 	 * Returns OK if there is no winner, RED_WINS if the blue butterfly
