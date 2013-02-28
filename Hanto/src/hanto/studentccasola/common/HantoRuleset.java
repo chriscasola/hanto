@@ -97,6 +97,26 @@ public abstract class HantoRuleset
 	}
 	
 	/**
+	 * Checks that all rules specified in this class are met
+	 * 
+	 * @param pieceType the piece being placed/moved
+	 * @param from the source location of the piece
+	 * @param to the destination location of the piece
+	 */
+	public boolean isValidMove(HantoPieceType pieceType, HantoCoordinate from, 
+			HantoCoordinate to)
+	{
+		boolean isValid = true;
+		try {
+			checkAll(pieceType, from, to);
+		}
+		catch (HantoException e) {
+			isValid = false;
+		}
+		return isValid;
+	}
+	
+	/**
 	 * @return the set of piece types that are able to walk
 	 */
 	public Set<HantoPieceType> getWalkingPieces()

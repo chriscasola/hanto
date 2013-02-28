@@ -89,7 +89,6 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		HantoMoveRecord result = null;
 
 		// Place butterfly if not already placed
-		//if (game.getState().getPieces().get(myColor).contains(HantoPieceType.BUTTERFLY))
 		if (myButterfly == null)
 		{
 			HantoPieceType piece = HantoPieceType.BUTTERFLY;
@@ -125,6 +124,7 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 			result = movePiece();
 			if (result != null)
 			{
+				game.makeMove(result.getPiece(), result.getFrom(), result.getTo());
 				System.out.println("Found move");
 			}
 		}
@@ -164,13 +164,9 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 				{
 					if (game.getState().getBoard().getCellAtCoordinate(coord) == null)
 					{
-						try {
-							game.getRuleset().checkAll(cell.getPiece(), cell.getCoordinate(), coord);
+						if (game.getRuleset().isValidMove(cell.getPiece(), cell.getCoordinate(), coord))
+						{
 							possibleMoves.add(new HantoMoveRecord(cell.getPiece(), cell.getCoordinate(), coord));
-						}
-						catch (HantoException e) {
-							// keep looking
-							continue;
 						}
 					}
 				}
@@ -181,13 +177,9 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 				{
 					if (game.getState().getBoard().getCellAtCoordinate(coord) == null)
 					{
-						try {
-							game.getRuleset().checkAll(cell.getPiece(), cell.getCoordinate(), coord);
+						if (game.getRuleset().isValidMove(cell.getPiece(), cell.getCoordinate(), coord))
+						{
 							possibleMoves.add(new HantoMoveRecord(cell.getPiece(), cell.getCoordinate(), coord));
-						}
-						catch (HantoException e) {
-							// keep looking
-							continue;
 						}
 					}
 				}
@@ -196,21 +188,9 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 
 		if (possibleMoves.size() > 0)
 		{
-			boolean done = false;
 			HantoMoveRecord record = null;
-			while (!done)
-			{
-				done = true;
-				int movePick = randGen.nextInt(possibleMoves.size());
-				record = possibleMoves.get(movePick);
-				try {
-					game.makeMove(record.getPiece(), record.getFrom(), record.getTo());
-				}
-				catch (HantoException e)
-				{
-					done = false;
-				}
-			}
+			int movePick = randGen.nextInt(possibleMoves.size());
+			record = possibleMoves.get(movePick);
 			return record;
 		}
 		else
