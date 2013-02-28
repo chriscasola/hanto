@@ -94,7 +94,8 @@ public class BasicHantoBoard implements HantoBoard
 			{
 				if (state == MoveResult.OK)
 				{
-					state = (cell.getPlayer() == HantoPlayerColor.BLUE) ? MoveResult.RED_WINS : MoveResult.BLUE_WINS;
+					state = (cell.getPlayer() == HantoPlayerColor.BLUE) ? 
+							MoveResult.RED_WINS : MoveResult.BLUE_WINS;
 				}
 				else
 				{
@@ -146,10 +147,11 @@ public class BasicHantoBoard implements HantoBoard
 	}
 	
 	/* 
-	 * @see hanto.studentccasola.common.HantoBoard#checkMove(hanto.util.HantoCoordinate, hanto.util.HantoCoordinate)
+	 * @see hanto.studentccasola.common.HantoBoard#checkMove(
+	 * 		hanto.util.HantoCoordinate, hanto.util.HantoCoordinate)
 	 */
 	@Override
-	public boolean checkMove(HantoCoordinate from, HantoCoordinate to)
+	public boolean canMove(HantoCoordinate from, HantoCoordinate to)
 	{
 		// Return value
 		boolean isValid = true;

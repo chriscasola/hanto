@@ -103,6 +103,7 @@ public abstract class HantoRuleset
 	 * @param pieceType the piece being placed/moved
 	 * @param from the source location of the piece
 	 * @param to the destination location of the piece
+	 * @return true if the given move would be valid, false otherwise
 	 */
 	public boolean isValidMove(HantoPieceType pieceType, HantoCoordinate from, 
 			HantoCoordinate to)
@@ -145,6 +146,11 @@ public abstract class HantoRuleset
 		}
 	}
 	
+	/**
+	 * Make sure the move would not place the piece on top of another piece
+	 * @param to the destination of the move
+	 * @throws HantoException
+	 */
 	protected void cannotMoveOntoAnotherPiece(HexCoordinate to) throws HantoException
 	{
 		if (gameState.getBoard().getCellAtCoordinate(to) != null)
@@ -159,9 +165,10 @@ public abstract class HantoRuleset
 	 * @param to the destination of the move
 	 * @throws HantoException
 	 */
-	protected void boardMustRemainConnected(HexCoordinate from, HexCoordinate to) throws HantoException
+	protected void boardMustRemainConnected(HexCoordinate from, HexCoordinate to) 
+			throws HantoException
 	{
-		if (from != null && !gameState.getBoard().checkMove(from, to))
+		if (from != null && !gameState.getBoard().canMove(from, to))
 		{
 			throw new HantoException("This move would result in the board becoming disconnected.");
 		}

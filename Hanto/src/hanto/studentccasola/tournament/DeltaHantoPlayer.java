@@ -26,7 +26,7 @@ import hanto.util.HantoPlayerColor;
 public class DeltaHantoPlayer implements HantoGamePlayer
 {
 	private final DeltaHantoGame game;
-	private HantoMoveStrategy moveStrategy;
+	private final HantoMoveStrategy moveStrategy;
 
 	/**
 	 * Constructs the player
@@ -52,11 +52,12 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 			// Record the opponent's move in the game if they moved
 			if (opponentsMove != null)
 			{
-				game.makeMove(opponentsMove.getPiece(), opponentsMove.getFrom(), opponentsMove.getTo());
+				game.makeMove(opponentsMove.getPiece(), 
+						opponentsMove.getFrom(), opponentsMove.getTo());
 			}
 			
 			// Get a move to make using the strategy
-			result = moveStrategy.getMove(opponentsMove);
+			result = moveStrategy.getNextMove(opponentsMove);
 			
 			// Record this player's move in the game
 			game.makeMove(result.getPiece(), result.getFrom(), result.getTo());

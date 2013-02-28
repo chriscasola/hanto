@@ -49,7 +49,7 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 	 * @see hanto.studentccasola.tournament.HantoMoveStrategy#getMove()
 	 */
 	@Override
-	public HantoMoveRecord getMove(HantoMoveRecord opponentsMove)
+	public HantoMoveRecord getNextMove(HantoMoveRecord opponentsMove)
 	{
 		HantoMoveRecord result = null;
 		
@@ -92,7 +92,7 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 	protected HantoMoveRecord placeButterfly(HantoMoveRecord opponentsMove)
 	{
 		HantoMoveRecord move = null;
-		HantoPieceType piece = HantoPieceType.BUTTERFLY;
+		final HantoPieceType piece = HantoPieceType.BUTTERFLY;
 		HexCoordinate dest = null;
 		
 		// Other player went first, so find a place for the butterfly
@@ -104,7 +104,7 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 		// This player goes first, so place the butterfly at the origin
 		if (dest == null)
 		{
-			dest = new HexCoordinate(0,0);
+			dest = new HexCoordinate(0, 0);
 		}
 		
 		// Construct a HantoMoveRecord for the chosen destiation cell
@@ -125,10 +125,10 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 		HantoMoveRecord move = null;
 		
 		// Get an available piece to place
-		HantoPieceType piece = game.getState().getPieces().get(playerColor).get(0);
+		final HantoPieceType piece = game.getState().getPieces().get(playerColor).get(0);
 		
 		// Find a place to put the piece
-		HexCoordinate dest = getValidPlaceLocation(piece);
+		final HexCoordinate dest = getValidPlaceLocation(piece);
 		
 		// If able to find a place, construct a move record and return
 		if (dest != null)
@@ -147,14 +147,14 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 	protected HantoMoveRecord movePiece()
 	{
 		// Get all possible moves
-		List<HantoMoveRecord> possibleMoves = getPossiblePieceMoves();
+		final List<HantoMoveRecord> possibleMoves = getPossiblePieceMoves();
 
 		// Choose a move at random
 		HantoMoveRecord move = null;
 		if (possibleMoves.size() > 0)
 		{
 			HantoMoveRecord record = null;
-			int movePick = randGen.nextInt(possibleMoves.size());
+			final int movePick = randGen.nextInt(possibleMoves.size());
 			record = possibleMoves.get(movePick);
 			move = record;
 		}
@@ -168,8 +168,8 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 	 */
 	protected List<HantoMoveRecord> getPossiblePieceMoves()
 	{
-		List<HexCell> cellList = getShuffledBoardCells();
-		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
+		final List<HexCell> cellList = getShuffledBoardCells();
+		final List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
 		
 		possibleMoves.addAll(getCrabMoves(cellList));
 		possibleMoves.addAll(getSparrowMoves(cellList));
@@ -177,9 +177,13 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 		return possibleMoves;
 	}
 	
+	/**
+	 * @param cellList all of the cells on the board (preferably in a random order)
+	 * @return the list of possible crab piece moves
+	 */
 	protected List<HantoMoveRecord> getCrabMoves(List<HexCell> cellList)
 	{
-		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
+		final List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
 
 		for (HexCell cell : cellList)
 		{
@@ -192,9 +196,14 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 		return possibleMoves;
 	}
 	
+	/**
+	 * @param cellList all of the cells on the board (preferably in a random order)
+	 * @return the list of sparrow piece moves that would move the sparrow to a cell
+	 * adjacent to the opponent's butterfly
+	 */
 	protected List<HantoMoveRecord> getSparrowMoves(List<HexCell> cellList)
 	{
-		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
+		final List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
 		
 		for (HexCell cell : cellList)
 		{
@@ -207,14 +216,24 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 		return possibleMoves;
 	}
 	
-	protected void checkAdjacentCells(HexCell source, HexCoordinate target, List<HantoMoveRecord> possibleMoves)
+	/**
+	 * Checks to see if the piece at the source location can be moved to the
+	 * target location, and if so adds the possible move to the give list.
+	 * 
+	 * @param source the current location of the piece being checked
+	 * @param target the intended location of the piece being moved
+	 * @param possibleMoves the list containing all possible moves
+	 */
+	protected void checkAdjacentCells(HexCell source, 
+			HexCoordinate target, List<HantoMoveRecord> possibleMoves)
 	{
 		for (HexCoordinate coord : target.getAdjacentCoordinates())
 		{
 			if (game.getState().getBoard().getCellAtCoordinate(coord) == null &&
 					game.getRuleset().isValidMove(source.getPiece(), source.getCoordinate(), coord))
 			{
-				possibleMoves.add(new HantoMoveRecord(source.getPiece(), source.getCoordinate(), coord));
+				possibleMoves.add(new HantoMoveRecord(
+						source.getPiece(), source.getCoordinate(), coord));
 			}
 		}
 	}

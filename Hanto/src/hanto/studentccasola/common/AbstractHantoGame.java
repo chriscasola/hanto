@@ -95,7 +95,7 @@ public abstract class AbstractHantoGame implements HantoGame
 			gameState.getBoard().placePiece(new HexCell(to, gameState.getTurn(), pieceType));
 
 			// Remove the piece from the player's available list
-			gameState.usePiece(pieceType, to);
+			gameState.usePiece(pieceType);
 		}
 		
 		// Move the game state to the next turn

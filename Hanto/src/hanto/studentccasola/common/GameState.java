@@ -9,7 +9,6 @@
  *******************************************************************************/
 package hanto.studentccasola.common;
 
-import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -82,7 +81,13 @@ public class GameState
 		return gameStatus;
 	}
 	
-	public void usePiece(HantoPieceType piece, HantoCoordinate to)
+	/**
+	 * Remove the given piece from the list of available pieces for the player
+	 * whose turn it currently is.
+	 * 
+	 * @param piece the piece that was used
+	 */
+	public void usePiece(HantoPieceType piece)
 	{
 		pieces.get(turn).remove(piece);
 	}

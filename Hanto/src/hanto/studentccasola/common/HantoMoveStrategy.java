@@ -34,6 +34,11 @@ public abstract class HantoMoveStrategy
 	protected final AbstractHantoGame game;
 	protected final HantoPlayerColor playerColor;
 	
+	/**
+	 * Construct a move strategy
+	 * @param game the HantoGame used to record the game
+	 * @param playerColor the color of this player
+	 */
 	protected HantoMoveStrategy(AbstractHantoGame game, HantoPlayerColor playerColor)
 	{
 		randGen = new Random(System.currentTimeMillis());
@@ -41,44 +46,72 @@ public abstract class HantoMoveStrategy
 		this.playerColor = playerColor;
 	}
 	
-	public abstract HantoMoveRecord getMove(HantoMoveRecord opponentsMove);
+	/**
+	 * Returns the next move to make
+	 * @param opponentsMove the last move made by the opponent
+	 * @return the next move to make
+	 */
+	public abstract HantoMoveRecord getNextMove(HantoMoveRecord opponentsMove);
 	
+	/**
+	 * Sets the seed of the random number generator
+	 * 
+	 * @param seed the number to use as the seed
+	 */
 	public void setSeed(long seed)
 	{
 		randGen.setSeed(seed);
 	}
 	
+	/**
+	 * @return a new list containing all of the occupied cells on the game
+	 * board in a random order
+	 */
 	protected List<HexCell> getShuffledBoardCells()
 	{
-		HexCell[] cells = game.getState().getBoard().getCells().toArray(new HexCell[0]);
-		List<HexCell> cellList = new ArrayList<HexCell>();
+		final HexCell[] cells = game.getState().getBoard().getCells().toArray(new HexCell[0]);
+		final List<HexCell> cellList = new ArrayList<HexCell>();
+		
 		for (int i = 0; i < cells.length; i++)
 		{
 			if (i == 0)
+			{
 				cellList.add(cells[i]);
+			}
 			else
+			{
 				cellList.add(randGen.nextInt(cellList.size()), cells[i]);
+			}
 		}
 		return cellList;
 	}
 	
+	/**
+	 * @param pieceType the piece that needs to be placed on the board
+	 * @return the coordinate where the piece can be placed, or null if
+	 * there is no possible location
+	 */
 	protected HexCoordinate getValidPlaceLocation(HantoPieceType pieceType)
 	{
-		List<HexCoordinate> validCoord = findValidPlacement(pieceType);
+		HexCoordinate location = null;
+		final List<HexCoordinate> validCoord = findValidPlacement(pieceType);
+		
 		if (validCoord.size() > 0)
 		{
-			return validCoord.get(randGen.nextInt(validCoord.size()));
+			location = validCoord.get(randGen.nextInt(validCoord.size()));
 		}
-		return null;
+		return location;
 	}
 	
 	private List<HexCoordinate> findValidPlacement(HantoPieceType pieceType)
 	{
-		Collection<HexCell> cells = game.getState().getBoard().getCells();
-		Set<HexCoordinate> validCells = new HashSet<HexCoordinate>();
+		final Collection<HexCell> cells = game.getState().getBoard().getCells();
+		final Set<HexCoordinate> validCells = new HashSet<HexCoordinate>();
+		
 		for (HexCell cell : cells)
 		{
-			if (cell.getPlayer() == game.getState().getTurn() || game.getState().getCurrentRound() < 2)
+			if (cell.getPlayer() == game.getState().getTurn() || 
+					game.getState().getCurrentRound() < 2)
 			{
 				for (HexCoordinate coord : cell.getCoordinate().getAdjacentCoordinates())
 				{
@@ -89,7 +122,7 @@ public abstract class HantoMoveStrategy
 				}
 			}
 		}
-		List<HexCoordinate> retVal = new ArrayList<HexCoordinate>();
+		final List<HexCoordinate> retVal = new ArrayList<HexCoordinate>();
 		retVal.addAll(validCells);
 		return retVal;
 	}
