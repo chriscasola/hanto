@@ -38,13 +38,15 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 	private final HantoPlayerColor myColor;
 	private final DeltaHantoGame game;
 	private HexCoordinate myButterfly;
+	private HexCoordinate theirButterfly;
 	private Random randGen;
-	
+
 	public DeltaHantoPlayer(HantoPlayerColor myColor, boolean isFirst)
 	{
 		this.myColor = myColor;
 		game = new DeltaHantoGame();
-		randGen = new Random(9);
+		long seed = System.currentTimeMillis();
+		randGen = new Random(seed);
 	}
 
 	/* 
@@ -58,14 +60,11 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 			if (opponentsMove != null) {
 				// Add the opponents move to the local game
 				game.makeMove(opponentsMove.getPiece(), opponentsMove.getFrom(), opponentsMove.getTo());
-				
+
 				// Make a move
 				result = findMove();
 			}
 			else {
-				// Set the color of this player
-				game.initialize(myColor);
-				
 				// Make the first move, at the origin
 				myButterfly = new HexCoordinate(0,0);
 				result = new HantoMoveRecord(HantoPieceType.BUTTERFLY, null, new HexCoordinate(0,0));
@@ -75,14 +74,14 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		catch (HantoException e) {
 			result = new HantoMoveRecord(null, null, null);
 		}
-		
+
 		return result;
 	}
 
 	protected HantoMoveRecord findMove() throws HantoException
 	{
 		HantoMoveRecord result = null;
-		
+
 		// Place butterfly if not already placed
 		//if (game.getState().getPieces().get(myColor).contains(HantoPieceType.BUTTERFLY))
 		if (myButterfly == null)
@@ -95,7 +94,7 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 				myButterfly = dest;
 			}
 		}
-		
+
 		// Place a piece if possible
 		if (result == null && game.getState().getPieces().get(myColor).size() > 0)
 		{
@@ -106,7 +105,13 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 				result = new HantoMoveRecord(piece, null, dest);
 			}
 		}
-		
+
+		// Make the move
+		if (result != null)
+		{
+			game.makeMove(result.getPiece(), result.getFrom(), result.getTo());
+		}
+
 		// Move a piece if placement was not possible
 		if (result == null)
 		{
@@ -117,16 +122,10 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 				System.out.println("Found move");
 			}
 		}
-		
-		// Make the move
-		if (result != null)
-		{
-			game.makeMove(result.getPiece(), result.getFrom(), result.getTo());
-		}
-		
+
 		return result;
 	}
-	
+
 	protected HexCoordinate findValidPlacementHelper(HantoPieceType pieceType)
 	{
 		List<HexCoordinate> validCoord = findValidPlacement(pieceType);
@@ -136,7 +135,7 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		}
 		return null;
 	}
-	
+
 	protected HantoMoveRecord movePiece()
 	{
 		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
@@ -149,7 +148,7 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 			else
 				cellList.add(randGen.nextInt(cellList.size()), cells[i]);
 		}
-		
+
 		for (HexCell cell : cellList)
 		{
 			if (cell.getPlayer() == myColor && cell.getPiece() == HantoPieceType.SPARROW)
@@ -187,18 +186,32 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 				}
 			}
 		}
-		
+
 		if (possibleMoves.size() > 0)
 		{
-			int movePick = randGen.nextInt(possibleMoves.size());
-			return possibleMoves.get(movePick);
+			boolean done = false;
+			HantoMoveRecord record = null;
+			while (!done)
+			{
+				done = true;
+				int movePick = randGen.nextInt(possibleMoves.size());
+				record = possibleMoves.get(movePick);
+				try {
+					game.makeMove(record.getPiece(), record.getFrom(), record.getTo());
+				}
+				catch (HantoException e)
+				{
+					done = false;
+				}
+			}
+			return record;
 		}
 		else
 		{
 			return null;
 		}
 	}
-	
+
 	protected List<HexCoordinate> findValidPlacement(HantoPieceType pieceType)
 	{
 		Collection<HexCell> cells = game.getState().getBoard().getCells();
@@ -227,14 +240,20 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		retVal.addAll(validCells);
 		return retVal;
 	}
-	
+
 	protected HantoGame getGame()
 	{
 		return game;
 	}
-	
+
 	protected GameState getGameState()
 	{
 		return game.getState();
+	}
+	
+	protected void randSeed(long seed)
+	{
+		randGen.setSeed(seed);
+		System.out.println("Seed: " + String.valueOf(seed));
 	}
 }

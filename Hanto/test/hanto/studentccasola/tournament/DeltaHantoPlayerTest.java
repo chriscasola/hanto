@@ -48,6 +48,10 @@ public class DeltaHantoPlayerTest
 	@Test
 	public void playerWorksWithDirector()
 	{
+		System.out.println("\n\n------Starting Director test----------\n\n");
+		player.randSeed(1362005752870l);
+		player2.randSeed(1362005752870l);
+		
 		HantoGameDirector director = HantoGameDirector.getInstance();
 		if (director == null)
 		{
@@ -57,16 +61,15 @@ public class DeltaHantoPlayerTest
 		director.initialize(player, player2);
 		director.setLogLevel(HantoGameDirector.HantoLogLevel.FULL);
 		director.setMoveLimit(150);
-		System.out.println("\n\n------Starting test----------\n\n");
 		final MoveResult result = director.playGame();
 		System.out.println("Result: " + result.toString());
 		if (director.getErrorCause() != null)
 		{
 			System.out.println(">>" + director.getErrorCause().getMessage());
 		}
+		System.out.println("\n\n------Ending Director test----------\n\n");
 	}
 	
-	@Ignore
 	@Test
 	public void continueMakingMovesAfterPiecesArePlaced() throws HantoException
 	{

@@ -87,6 +87,7 @@ public class BasicHantoBoard implements HantoBoard
 		}
 		catch (HantoException e) // error occurred placing the new cell, put the old one back
 		{
+			coordinateMap.remove(newCell.getCoordinate());
 			coordinateMap.put(oldCell.getCoordinate(), oldCell);
 			throw new HantoException("Cannot place new cell.", e);
 		}
