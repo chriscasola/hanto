@@ -32,20 +32,15 @@ public interface HantoBoard
 	 * already occupied on the board.
 	 * 
 	 * @param hexCell the cell to place
-	 * @throws HantoException if the cell is already occupied on the board or
-	 * the cell would not be adjacent to other occupied cells.
 	 */
-	public void placePiece(HexCell hexCell) throws HantoException;
+	public void placePiece(HexCell hexCell);
 	
 	/**
 	 * Moves the cell at the given from location to the given to location.
 	 * @param from the original location of the cell
 	 * @param to the new location of the cell
-	 * @throws HantoException if there is no cell at the given from location, if
-	 * there is already a cell at the given to location, or if moving the piece
-	 * would result in all cells no longer being contiguous.
 	 */
-	public void movePiece(HantoCoordinate from, HantoCoordinate to) throws HantoException;
+	public void movePiece(HantoCoordinate from, HantoCoordinate to);
 	
 	/**
 	 * Returns OK if there is no winner, RED_WINS if the blue butterfly
@@ -66,6 +61,16 @@ public interface HantoBoard
 	 */
 	public boolean isAdjacent(HexCoordinate cell);
 	
+	/**
+	 * Determines if moving the piece at the given from location to the
+	 * given to location would result in the board state becoming
+	 * invalid (a.k.a. disconnected)
+	 * 
+	 * @param from the original location of the cell
+	 * @param to the new location of the cell
+	 * @return false if the move would leave the board invalid, otherwise true
+	 */
+	public boolean checkMove(HantoCoordinate from, HantoCoordinate to);
 	
 	/**
 	 * Returns the cell at the given coordinate on the board, or null

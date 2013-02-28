@@ -79,6 +79,7 @@ public abstract class HantoRuleset
 		pieceToMoveMatchesPieceAtFrom(pieceType, hexFrom);
 		piecesMustBeAdjacent(hexTo);
 		playButterflyByRoundFour(pieceType);
+		boardMustRemainConnected(hexFrom, hexTo);
 	}
 	
 	/**
@@ -120,6 +121,20 @@ public abstract class HantoRuleset
 	{
 		if (gameState.getStatus() != MoveResult.OK) {
 			throw new HantoException("The game is over, no more moves can be played.");
+		}
+	}
+	
+	/**
+	 * Make sure the move would not result in the board becoming disconnected
+	 * @param from the source location of the piece
+	 * @param to the destination of the move
+	 * @throws HantoException
+	 */
+	protected void boardMustRemainConnected(HexCoordinate from, HexCoordinate to) throws HantoException
+	{
+		if (from != null && !gameState.getBoard().checkMove(from, to))
+		{
+			throw new HantoException("This move would result in the board becoming disconnected.");
 		}
 	}
 	
