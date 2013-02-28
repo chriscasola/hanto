@@ -171,32 +171,12 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 		List<HexCell> cellList = getShuffledBoardCells();
 		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
 		
-		//possibleMoves.addAll(getCrabMoves(cellList));
-		//possibleMoves.addAll(getSparrowMoves(cellList));
-		
-		possibleMoves.addAll(getPieceMoves(cellList, HantoPieceType.CRAB, null));
-		possibleMoves.addAll(getPieceMoves(cellList, HantoPieceType.SPARROW,
-				(opponentButterfly != null) ? opponentButterfly : butterfly));
+		possibleMoves.addAll(getCrabMoves(cellList));
+		possibleMoves.addAll(getSparrowMoves(cellList));
 		
 		return possibleMoves;
 	}
 	
-	protected List<HantoMoveRecord> getPieceMoves(List<HexCell> cellList, HantoPieceType pieceType, HexCoordinate target)
-	{
-		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
-		for (HexCell cell : cellList)
-		{
-			if (cell.getPlayer() == playerColor && cell.getPiece() == pieceType)
-			{
-				target = (target == null) ? cell.getCoordinate() : target;
-				checkAdjacentCells(cell, target, possibleMoves);
-			}
-		}
-
-		return possibleMoves;
-	}
-	
-	/*
 	protected List<HantoMoveRecord> getCrabMoves(List<HexCell> cellList)
 	{
 		List<HantoMoveRecord> possibleMoves = new ArrayList<HantoMoveRecord>();
@@ -225,7 +205,7 @@ public class DeltaMoveStrategy extends HantoMoveStrategy
 			}
 		}
 		return possibleMoves;
-	}*/
+	}
 	
 	protected void checkAdjacentCells(HexCell source, HexCoordinate target, List<HantoMoveRecord> possibleMoves)
 	{
