@@ -58,6 +58,12 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		HantoMoveRecord result = null;
 		try {
 			if (opponentsMove != null) {
+				// Keep track of the opponent's butterfly
+				if (opponentsMove.getPiece() == HantoPieceType.BUTTERFLY)
+				{
+					theirButterfly = new HexCoordinate(opponentsMove.getTo());
+				}
+				
 				// Add the opponents move to the local game
 				game.makeMove(opponentsMove.getPiece(), opponentsMove.getFrom(), opponentsMove.getTo());
 
@@ -153,7 +159,8 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		{
 			if (cell.getPlayer() == myColor && cell.getPiece() == HantoPieceType.SPARROW)
 			{
-				for (HexCoordinate coord : myButterfly.getAdjacentCoordinates())
+				HexCoordinate butterfly = (theirButterfly != null) ? theirButterfly : myButterfly;
+				for (HexCoordinate coord : butterfly.getAdjacentCoordinates())
 				{
 					if (game.getState().getBoard().getCellAtCoordinate(coord) == null)
 					{
@@ -256,4 +263,5 @@ public class DeltaHantoPlayer implements HantoGamePlayer
 		randGen.setSeed(seed);
 		System.out.println("Seed: " + String.valueOf(seed));
 	}
+	
 }
