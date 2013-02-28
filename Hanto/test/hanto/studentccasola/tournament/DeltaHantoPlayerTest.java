@@ -5,15 +5,9 @@ package hanto.studentccasola.tournament;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import hanto.common.HantoException;
 import hanto.common.HantoGame;
 import hanto.studentccasola.HantoGameFactory;
-import hanto.studentccasola.common.HantoBoard;
-import hanto.studentccasola.common.HexCell;
-import hanto.studentccasola.common.HexCoordinate;
 import hanto.testutil.TestHantoCoordinate;
 import hanto.tournament.HantoGameDirector;
 import hanto.tournament.HantoMoveRecord;
@@ -23,7 +17,6 @@ import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -46,9 +39,30 @@ public class DeltaHantoPlayerTest
 	}
 	
 	@Test
+	public void stressTestWithDirector()
+	{
+		for (int i = 0; i < 150; i++)
+		{
+			setup();
+			player.randSeed(i);
+			player2.randSeed(i);
+			
+			HantoGameDirector director = HantoGameDirector.getInstance();
+			director.initialize(player, player2);
+			director.setMoveLimit(150);
+			
+			director.playGame();
+			
+			if (director.getErrorCause() != null)
+			{
+				fail(">>" + director.getErrorCause().getMessage());
+			}
+		}
+	}
+	
+	@Test
 	public void playerWorksWithDirector()
 	{
-		System.out.println("\n\n------Starting Director test----------\n\n");
 		//player.randSeed(1362005752870l);
 		//player2.randSeed(1362005752870l);
 		
@@ -59,15 +73,16 @@ public class DeltaHantoPlayerTest
 		}
 		
 		director.initialize(player, player2);
-		director.setLogLevel(HantoGameDirector.HantoLogLevel.FULL);
+		//director.setLogLevel(HantoGameDirector.HantoLogLevel.FULL);
 		director.setMoveLimit(150);
+		
 		final MoveResult result = director.playGame();
+		
 		System.out.println("Result: " + result.toString());
 		if (director.getErrorCause() != null)
 		{
-			System.out.println(">>" + director.getErrorCause().getMessage());
+			fail(">>" + director.getErrorCause().getMessage());
 		}
-		System.out.println("\n\n------Ending Director test----------\n\n");
 	}
 	
 	@Test
@@ -79,7 +94,7 @@ public class DeltaHantoPlayerTest
 		game.makeMove(lastMove.getPiece(), lastMove.getFrom(), lastMove.getTo());
 		lastMove = player2.makeMove(lastMove);
 		game.makeMove(lastMove.getPiece(), lastMove.getFrom(), lastMove.getTo());
-		System.out.println("\n\n------Starting test----------\n\n");
+
 		for (int i = 0; i < 150; i++)
 		{
 			lastMove = player.makeMove(lastMove);
@@ -95,7 +110,6 @@ public class DeltaHantoPlayerTest
 				break;
 			}
 		}
-		System.out.println("\n\n---------BOARD---------\n\n" + game.getPrintableBoard() + "\n\n---------END---------\n\n");
 	}
 
 	@Test
@@ -167,26 +181,6 @@ public class DeltaHantoPlayerTest
 		game.makeMove(move.getPiece(), move.getFrom(), move.getTo());
 	}
 	
-	@Test
-	public void canFindValidPlacement() throws HantoException
-	{
-		player.makeMove(null); // blue butterfly at 0,0
-		player.getGame().makeMove(HantoPieceType.BUTTERFLY, null, new TestHantoCoordinate(1,-1)); // red butterfly at 1,-1
-		player.getGame().makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(-1,1)); // blue sparrow at -1,1
-		player.getGame().makeMove(HantoPieceType.SPARROW, null, new TestHantoCoordinate(1,-2)); // red sparrow at 1,-2
-		
-		
-		final Collection<HexCoordinate> validPlacements = new ArrayList<HexCoordinate>();
-		validPlacements.add(new HexCoordinate(-1,2));
-		validPlacements.add(new HexCoordinate(-2,2));
-		validPlacements.add(new HexCoordinate(-2,1));
-		validPlacements.add(new HexCoordinate(-1,0));
-		validPlacements.add(new HexCoordinate(0,1));
-		
-		assertEquals(5, player.findValidPlacement(HantoPieceType.SPARROW).size());
-		assertTrue(player.findValidPlacement(HantoPieceType.SPARROW).containsAll(validPlacements));
-	}
-
 	@Test
 	public void thisPlayerMovesFirstShouldPlacePieceAtOrigin() throws HantoException
 	{

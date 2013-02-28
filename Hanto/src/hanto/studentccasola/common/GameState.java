@@ -9,6 +9,7 @@
  *******************************************************************************/
 package hanto.studentccasola.common;
 
+import hanto.util.HantoCoordinate;
 import hanto.util.HantoPieceType;
 import hanto.util.HantoPlayerColor;
 import hanto.util.MoveResult;
@@ -79,6 +80,11 @@ public class GameState
 	{
 		gameStatus = (turn == HantoPlayerColor.BLUE) ? MoveResult.RED_WINS : MoveResult.BLUE_WINS;
 		return gameStatus;
+	}
+	
+	public void usePiece(HantoPieceType piece, HantoCoordinate to)
+	{
+		pieces.get(turn).remove(piece);
 	}
 	
 	/**
