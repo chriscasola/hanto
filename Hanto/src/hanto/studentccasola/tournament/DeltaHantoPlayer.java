@@ -19,6 +19,7 @@ import hanto.util.HantoPlayerColor;
 /**
  * This class implements a player for the delta version of Hanto. It
  * uses the DeltaMoveStrategy to pick moves.
+ * 
  *
  * @author Chris Casola
  * @version Feb 26, 2013
